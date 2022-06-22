@@ -7,7 +7,7 @@ This box comes with everything you need to start using smart contracts from a re
 - clone this repository and start the HardHat network node
 
   ```
-  git clone
+  git clone https://github.com/revoltez/hardhat-react-box
   npx hardhat node
   ```
 
