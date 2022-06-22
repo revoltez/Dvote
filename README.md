@@ -1,6 +1,8 @@
-# HardHat React Box
+<p align="center">
+<img src="./Logo.png" heigh="400px" width="400px" class="center"></p>
+</p>
 
-This box comes with everything you need to start using smart contracts from a react app. This is as barebones as it gets, so nothing stands in your way. it uses Functional components and web3.js instead of ethers in the client.
+# Dvote
 
 ## installation
 
@@ -8,7 +10,6 @@ This box comes with everything you need to start using smart contracts from a re
 
   ```
   git clone https://github.com/revoltez/hardhat-react-box
-  npx hardhat node
   ```
 
 - import one of the accounts to Your wallet and configure it to connect to hardHat node (usually the url is http://127.0.0.1:8545/ with chainID 31337)

@@ -15,7 +15,6 @@ contract Dvote {
         string info;
         uint8 maxVotersSize;
         uint8 maxCandidateSize;
-        address[] joinRequestCandidates;
         mapping(address => bool) voters; // bool referr to whether voter is approved by admin to vote or not
         mapping(address => bool) candidates; // bool referr to whether candidate is approved by admin to vote or not
         mapping(address => uint8) votes;
@@ -46,38 +45,6 @@ contract Dvote {
         newSession.owner = payable(msg.sender);
         newSession.maxCandidateSize = maxCandidateSize;
         newSession.maxVotersSize = maxVotersSize;
-    }
-
-    function getCandidatesList(uint8 sessionID)
-        public
-        view
-        returns (address[] memory)
-    {
-        uint8 size = sessions[sessionID].maxCandidateSize;
-        address[] memory candidates = new address[](size);
-        //reuse the same varuable to count the candidates to loop through the candidates size
-        size = 0;
-        for (
-            uint8 i;
-            i < sessions[sessionID].joinRequestCandidates.length;
-            i++
-        ) {
-            // check if candidate is approved in the mapping
-            // loop through candidates list, push method is not allowed for dynalmic memory arrays
-            if (
-                sessions[sessionID].candidates[
-                    sessions[sessionID].joinRequestCandidates[i]
-                ] == true
-            ) {
-                size++;
-                for (uint8 j = 0; j < size; j++) {
-                    candidates[j] = sessions[sessionID].joinRequestCandidates[
-                        i
-                    ];
-                }
-            }
-        }
-        return candidates;
     }
 
     function register(
@@ -140,7 +107,6 @@ contract Dvote {
             sessions[sessionID].candidates[msg.sender] == false,
             "User already registered in this session"
         );
-        sessions[sessionID].joinRequestCandidates.push(msg.sender);
         emit joinSessionCandidateRequest(sessionID, msg.sender);
     }
 
@@ -198,17 +164,4 @@ contract Dvote {
     }
 
     // need to refactor in case equal votes
-    function getResults(uint8 sessionID) public view returns (address) {
-        address[] memory candidates = getCandidatesList(sessionID);
-        address winner;
-        for (uint256 i; i <= candidates.length; i++) {
-            if (
-                sessions[sessionID].votes[candidates[i]] >
-                sessions[sessionID].votes[winner]
-            ) {
-                winner = candidates[i];
-            }
-        }
-        return winner;
-    }
 }
