@@ -1,10 +1,10 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/home/ezio/Desktop/Dapps/hardhat_react_box/contracts/SimpleStorage.sol": {
-      "lastModificationDate": 1655820005560,
-      "contentHash": "60bdc8b1b1ddf5b09983563ac91d1b38",
-      "sourceName": "contracts/SimpleStorage.sol",
+    "/home/ezio/Desktop/Dapps/hardhatdvote/contracts/Dvote.sol": {
+      "lastModificationDate": 1655891247704,
+      "contentHash": "506b32e1094a4c199e16458698a12747",
+      "sourceName": "contracts/Dvote.sol",
       "solcConfig": {
         "version": "0.8.0",
         "settings": {
@@ -42,11 +42,11 @@
         "^0.8.0"
       ],
       "artifacts": [
-        "SimpleStorage"
+        "Dvote"
       ]
     },
-    "/home/ezio/Desktop/Dapps/hardhat_react_box/node_modules/hardhat/console.sol": {
-      "lastModificationDate": 1655800854551,
+    "/home/ezio/Desktop/Dapps/hardhatdvote/node_modules/hardhat/console.sol": {
+      "lastModificationDate": 1655890002829,
       "contentHash": "cc4777addd464ea56fa35b1c45df0591",
       "sourceName": "hardhat/console.sol",
       "solcConfig": {

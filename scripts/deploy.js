@@ -1,11 +1,11 @@
 async function main() {
   // We get the contract to deploy
-  const SimpleStorageFactory = await ethers.getContractFactory("SimpleStorage");
-  const SimpleStorage = await SimpleStorageFactory.deploy();
+  const DvoteFactory = await ethers.getContractFactory("Dvote");
+  const Dvote = await DvoteFactory.deploy();
 
-  await SimpleStorage.deployed();
+  await Dvote.deployed();
 
-  console.log("SimpleStorage deployed to:", SimpleStorage.address);
+  console.log("Dvote deployed to:", Dvote.address);
 }
 
 main()

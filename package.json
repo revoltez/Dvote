@@ -19,5 +19,10 @@
     "hardhat": "^2.9.9",
     "hardhat-deploy": "^0.11.10",
     "web3": "^1.7.3"
+  },
+  "scripts":
+  {
+    "test":"npx hardhat test",
+    "deploy":"npx hardhat run --network localhost scripts/deploy.js"
   }
 }
