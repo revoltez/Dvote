@@ -9,7 +9,8 @@ contract Dvote {
     event joinSessionCandidateRequest(uint256 sessionID, address user);
     event voterApproved(address voter);
     event candidateApproved(address candidate);
-
+    event participantRegistered(address user);
+    event sessionCreated(uint256 id);
     struct session {
         address payable owner;
         string info;
@@ -45,6 +46,7 @@ contract Dvote {
         newSession.owner = payable(msg.sender);
         newSession.maxCandidateSize = maxCandidateSize;
         newSession.maxVotersSize = maxVotersSize;
+        emit sessionCreated(sessions.length);
     }
 
     function register(
@@ -64,8 +66,15 @@ contract Dvote {
             name,
             true
         );
+        emit participantRegistered(msg.sender);
     }
 
+    /*
+    function getParticipant(address user)
+    {
+        participants[user].registered==true
+    }
+*/
     modifier registered(address p) {
         require(
             participants[p].registered == true,
