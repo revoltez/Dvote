@@ -4,7 +4,7 @@ import SessionModal from './SessionModal';
 export default function Sessions({instance,myAddr}) {
 
 const [sessions, setSessions] = useState([]);
-let sessionList = sessions.map((elem,index) => <Session key={index} session={elem}/>);
+let sessionList = sessions.map((elem,index) => <Session key={index} myAddr={myAddr} instance={instance} session={elem}/>);
 
 useEffect(()=>
 {
@@ -23,9 +23,11 @@ const handleSessionCreatd =async (event)=>
     let sessionReceipt = await instance.methods.sessions(index).call();
     let session = 
     {
+      id: index,
       info : sessionReceipt.info,
       maxCandidateSize:sessionReceipt.maxCandidateSize,
       maxVotersSize:sessionReceipt.maxVotersSize,
+      owner:sessionReceipt.owner,
     }
     setSessions(prev=> [...prev,session]);
 }
@@ -33,9 +35,9 @@ const handleSessionCreatd =async (event)=>
 return (
   <React.Fragment>
    <SessionModal instance={instance} myAddr={myAddr}></SessionModal> 
-  <h1>sesions List</h1>
-  <div class="row">
-        <div>{sessionList}</div>
+  <h1 class="row">sesions List</h1>
+  <div class="conatiner">
+      {sessionList}
   </div>
   </React.Fragment>
   )

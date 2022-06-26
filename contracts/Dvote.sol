@@ -7,8 +7,8 @@ contract Dvote {
     mapping(address => participant) public participants;
     event joinSessionVoterRequest(uint256 sessionID, address user);
     event joinSessionCandidateRequest(uint256 sessionID, address user);
-    event voterApproved(address voter);
-    event candidateApproved(address candidate);
+    event voterApproved(uint8 sessionID, address voter);
+    event candidateApproved(uint8 sessionID, address candidate);
     event participantRegistered(address user);
     event sessionCreated(uint256 id);
     struct session {
@@ -133,7 +133,7 @@ contract Dvote {
             "voter already approved"
         );
         sessions[sessionID].voters[voter] = true;
-        emit voterApproved(voter);
+        emit voterApproved(sessionID, voter);
     }
 
     function approveCandidate(uint8 sessionID, address candidate)
@@ -150,7 +150,7 @@ contract Dvote {
             "candidate already approved"
         );
         sessions[sessionID].candidates[candidate] = true;
-        emit candidateApproved(candidate);
+        emit candidateApproved(sessionID, candidate);
     }
 
     // voter must be registered and approved to vote in that session
