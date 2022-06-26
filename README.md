@@ -23,7 +23,7 @@
 - clone this repository and start the HardHat network node
 
   ```
-  git clone https://github.com/revoltez/hardhat-react-box
+  git clone https://github.com/revoltez/Dvote
   ```
 
 - import one of the accounts to Your wallet and configure it to connect to hardHat node (usually the url is http://127.0.0.1:8545/ with chainID 31337)
