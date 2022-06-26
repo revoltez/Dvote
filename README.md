@@ -4,6 +4,20 @@
 
 # Dvote
 
+// work still on progress
+
+- Dvote is a General Decentralized Voting Dapp that is Open, Secure and customizable.
+
+- everyone is allowed to create his own voting session and approve which candidates and voters are allowed to participate
+
+- Each voting session has two phases, registration phase and voting phase
+
+- The Dapp will automatically notify participants of the following events:
+  - whenever a voter gets approved by session admin
+  - whenever a candidate gets approved by session admin
+  - whenever the voting phase has expired, to count the votes
+  - whenever a voter or a candidate requests to join the session
+
 ## installation
 
 - clone this repository and start the HardHat network node
