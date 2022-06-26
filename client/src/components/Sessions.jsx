@@ -1,53 +1,42 @@
 import React, { Component, useEffect, useState } from 'react'
 import Session from './Session';
-
+import SessionModal from './SessionModal';
 export default function Sessions({instance,myAddr}) {
 
-const [sessions, setSessions] = useState([]);  
-  const createSession = async (event)=>
-  {
-    event.preventDefault(); 
-    await instance.methods.createSession(
-        event.target.info.value,
-        event.target.registrationDeadline.value,
-        event.target.votingDeadline.value,
-        event.target.maxVotersSize.value,
-        event.target.maxCandidateSize.value,
-    ).send({from:myAddr});
-
-}
+const [sessions, setSessions] = useState([]);
+let sessionList = sessions.map((elem,index) => <Session key={index} session={elem}/>);
 
 useEffect(()=>
 {
   const fetchSessions =async ()=>
     {
-        instance.events.sessionCreated({fromBlock:"0"},(err,evt)=>{
-          console.log("received event",evt);
-        }).on("data",async (evt)=>{ handleSessionCreatd(evt)})
+        instance.events.sessionCreated({fromBlock:"0"}).on("data",async (evt)=>{ await handleSessionCreatd(evt)})
+        .on("connected",(id)=>{console.log("subsdcribed to event with id ::",id)})  
+        .on("error",async(err,receipt)=>{console.log(err)})
     }
     fetchSessions();
 },[]);
 
-
 const handleSessionCreatd =async (event)=>
 {
     let index = event.returnValues.id -1;
-    let session = await instance.methods.sessions(index).call();
-    console.log(session);
+    let sessionReceipt = await instance.methods.sessions(index).call();
+    let session = 
+    {
+      info : sessionReceipt.info,
+      maxCandidateSize:sessionReceipt.maxCandidateSize,
+      maxVotersSize:sessionReceipt.maxVotersSize,
+    }
+    setSessions(prev=> [...prev,session]);
 }
 
-  return (
-    <div class="container">
-    <form onSubmit={(event)=>{createSession(event)}}>
-    <div class="form-group" >    
-        <input class="form-control border" placeholder="Session General Information " name="info" type="text"></input>
-        <input class="form-control border mt-2" placeholder="maximum voters size" name="maxVotersSize" type="number"></input>
-        <input class="form-control border mt-2" placeholder="maximum candidate size" name="maxCandidateSize" type="number"></input>
-        <input class="form-control border mt-2" placeholder="Registration Deadline" name="registrationDeadline" type="number"></input>
-        <input class="form-control border mt-2" placeholder="Voting Deadline" name="votingDeadline" type="number"></input>
-        <button class="btn-warning text-white form-control mt-2" type="submit">Create Session</button>
-    </div>    
-    </form>
-    </div>
+return (
+  <React.Fragment>
+   <SessionModal instance={instance} myAddr={myAddr}></SessionModal> 
+  <h1>sesions List</h1>
+  <div class="row">
+        <div>{sessionList}</div>
+  </div>
+  </React.Fragment>
   )
 }

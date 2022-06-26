@@ -3,8 +3,19 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import "jquery/dist/jquery.min.js";
+import $ from "jquery";
+import "@popperjs/core";
+
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+$("#myModal").on("shown.bs.modal", function () {
+  $("#exampleModalLabel").trigger("focus");
+});
+
 root.render(<App />);
 
 // If you want to start measuring performance in your app, pass a function

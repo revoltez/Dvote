@@ -41,7 +41,7 @@ function App() {
         <p align="center" padding-top="30px">
           Loading Dapp
         </p>
-        <div class="d-flex justify-content-center position-absolute top-50 start-50 translate-middle">
+        <div class="d-flex justify-content-center top-50 start-50 translate-middle">
           <div
             class="spinner-grow"
             style={{ width: "6rem", height: "6rem" }}

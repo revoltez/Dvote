@@ -1,9 +1,8 @@
 import React, { Component, useState } from 'react';
 
-export default function Session() {
-    const [info, setInfo] = useState(null)
+export default function Session({session}) {
 
     return (
-    <div>Session</div>
-  )
+      <p> this is the session info {session.info}</p>
+      );
 }
