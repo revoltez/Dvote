@@ -16,6 +16,7 @@ contract Dvote {
         string info;
         uint8 maxVotersSize;
         uint8 maxCandidateSize;
+        mapping(address => bool) registered;
         mapping(address => bool) voters; // bool referr to whether voter is approved by admin to vote or not
         mapping(address => bool) candidates; // bool referr to whether candidate is approved by admin to vote or not
         mapping(address => uint8) votes;
@@ -47,6 +48,22 @@ contract Dvote {
         newSession.maxCandidateSize = maxCandidateSize;
         newSession.maxVotersSize = maxVotersSize;
         emit sessionCreated(sessions.length);
+    }
+
+    //
+    function isRegistered(uint8 sessionID, address user)
+        public
+        view
+        registered(user)
+        returns (bool status, string memory registrationType)
+    {
+        if (sessions[sessionID].voters[user] == true) {
+            return (true, "voter");
+        } else if (sessions[sessionID].candidates[user]) {
+            return (true, "candidate");
+        } else {
+            return (false, "NotRegistered");
+        }
     }
 
     function register(
@@ -104,6 +121,11 @@ contract Dvote {
             sessions[sessionID].voters[msg.sender] == false,
             "User already registered in this session"
         );
+        require(
+            sessions[sessionID].registered[msg.sender] == false,
+            "user already requested registry"
+        );
+        sessions[sessionID].registered[msg.sender] = true;
         emit joinSessionVoterRequest(sessionID, msg.sender);
     }
 
@@ -116,6 +138,11 @@ contract Dvote {
             sessions[sessionID].candidates[msg.sender] == false,
             "User already registered in this session"
         );
+        require(
+            sessions[sessionID].registered[msg.sender] == false,
+            "user already requested registry"
+        );
+        sessions[sessionID].registered[msg.sender] = true;
         emit joinSessionCandidateRequest(sessionID, msg.sender);
     }
 

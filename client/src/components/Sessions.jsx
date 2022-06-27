@@ -10,8 +10,7 @@ useEffect(()=>
 {
   const fetchSessions =async ()=>
     {
-        instance.events.sessionCreated({fromBlock:"0"}).on("data",async (evt)=>{ await handleSessionCreatd(evt)})
-        .on("connected",(id)=>{console.log("subsdcribed to event with id ::",id)})  
+        instance.events.sessionCreated({fromBlock:"0"}).on("data",(evt)=>{handleSessionCreatd(evt)})
         .on("error",async(err,receipt)=>{console.log(err)})
     }
     fetchSessions();
