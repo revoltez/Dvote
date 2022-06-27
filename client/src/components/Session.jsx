@@ -29,7 +29,7 @@ const [participants, setParticipants] = useState([]);
 
 const [joinVoterClassParams, setJoinVoterClassParams] = useState("btn mb-2 btn-warning text-white visible");
 const [joinCandidateClassParams, setCandidateClassParams] = useState("btn mb-2 btn-danger text-white visible");
-let participantList = participants.map((elem,index)=> <Participant participant={elem}/>);
+let participantList = participants.map((elem,index)=> <Participant key={index} participant={elem}/>);
 
 useEffect(()=>
 {
@@ -101,7 +101,7 @@ const joinSessionAsVoter = async ()=>
 }
 
     return (
-      <div class="row">
+      <div class="row border" style={{height:"400px"}}>
             <div class="col-4 border card">
               <div class="card-body">
                 <p class="card-title p-2 w-100">Session#{session.id}</p>
@@ -117,8 +117,8 @@ const joinSessionAsVoter = async ()=>
               <div class={joinCandidateClassParams} onClick={joinSessionAsCandidate}>Register as candidate</div>
             </div>  
             </div>
-            <div class="col border">
-              <div class="row">
+            <div class="col border h-100">
+              <div class="row"  style={{height:"400px"}}>
               {participantList}
               </div>
             </div>
