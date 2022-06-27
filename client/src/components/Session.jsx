@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
-
+import Participant from './Participant';
 export default function Session({session,myAddr,instance}) {
 // get the list of candidates
 // fetch if admin or not if yes ==> fetch the list of voters as well
@@ -26,21 +26,10 @@ const [registered, setRegistered] = useState(null);
 const [owner, setOwner] = useState(false);
 // only approved voter and approved candidates
 const [participants, setParticipants] = useState([]);
-const [joinVRequest, setJoinVRequest] = useState([]);
-const [joinCRequest, setJoinCRequest] = useState([]);
 
 const [joinVoterClassParams, setJoinVoterClassParams] = useState("btn mb-2 btn-warning text-white visible");
 const [joinCandidateClassParams, setCandidateClassParams] = useState("btn mb-2 btn-danger text-white visible");
-
-// each time you get joinCRequest or joinVRequest event, you compare it with the lis of participants and add it
-// only if element doesnt exist
-useEffect(()=>
-{
-},[joinCRequest]);
-
-useEffect(()=>
-{
-},[joinVRequest])
+let participantList = participants.map((elem,index)=> <Participant participant={elem}/>);
 
 useEffect(()=>
 {
@@ -53,7 +42,7 @@ useEffect(() => {
 }, [myAddr])
 
 
-console.log("participants",participants);
+console.log("participants",{participantList});
 
 
 useEffect(()=>
@@ -71,10 +60,10 @@ useEffect(()=>
   if(myAddr === session.owner)
   {
     setOwner(true);
-  }
     // update the participants list to set the votingSesisonRequests and candidates SessionRequest 
     // such that only not approved users get added t participants list
     // verify if registered with checkregistered
+    // get the list of not registered voters to approve them if admin
     instance.events.joinSessionVoterRequest({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async (evt)=>
     {
           let voterAddr = evt.returnValues.user;
@@ -87,6 +76,7 @@ useEffect(()=>
               break;
       }
     }));
+  }
     instance.events.joinSessionCandidateRequest({fromBlock:0,filter:{sessionID:session.id}}).on("data",async (evt)=>
     {
           let candidateAddr = evt.returnValues.user;
@@ -126,6 +116,11 @@ const joinSessionAsVoter = async ()=>
               <div class={joinVoterClassParams} onClick={joinSessionAsVoter}>Register as voter</div>
               <div class={joinCandidateClassParams} onClick={joinSessionAsCandidate}>Register as candidate</div>
             </div>  
+            </div>
+            <div class="col border">
+              <div class="row">
+              {participantList}
+              </div>
             </div>
       </div> 
       );
