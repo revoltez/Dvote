@@ -20,15 +20,8 @@ const handleSessionCreatd =async (event)=>
 {
     let index = event.returnValues.id -1;
     let sessionReceipt = await instance.methods.sessions(index).call();
-    let session = 
-    {
-      id: index,
-      info : sessionReceipt.info,
-      maxCandidateSize:sessionReceipt.maxCandidateSize,
-      maxVotersSize:sessionReceipt.maxVotersSize,
-      owner:sessionReceipt.owner,
-    }
-    setSessions(prev=> [...prev,session]);
+    sessionReceipt.id= index;
+    setSessions(prev=> [...prev,sessionReceipt]);
 }
 
 return (

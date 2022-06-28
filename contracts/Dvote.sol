@@ -19,7 +19,7 @@ contract Dvote {
         mapping(address => bool) registered;
         mapping(address => bool) voters; // bool referr to whether voter is approved by admin to vote or not
         mapping(address => bool) candidates; // bool referr to whether candidate is approved by admin to vote or not
-        mapping(address => uint8) votes;
+        mapping(address => uint16) votes;
         uint32 registrationDeadline; // must be unix Epoch time
         uint32 votingDeadline;
     }
@@ -199,5 +199,13 @@ contract Dvote {
         sessions[sessionID].votes[candidate] += 1;
     }
 
+    function getVoteCount(uint8 sessionID, address candidate)
+        public
+        view
+        returns (uint16 count)
+    {
+        uint16 voteCount = sessions[sessionID].votes[candidate];
+        return voteCount;
+    }
     // need to refactor in case equal votes
 }

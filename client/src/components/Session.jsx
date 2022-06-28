@@ -1,24 +1,12 @@
 import React, { Component, useEffect, useState } from 'react';
 import Participant from './Participant';
 export default function Session({session,myAddr,instance}) {
-// get the list of candidates
-// fetch if admin or not if yes ==> fetch the list of voters as well
-// check voting phase status
-  // get the block time and compare with session deadlines
-// check if user alreadyCasted his vote
-// check if user already participated as voter or as candidate
 
-async function checkRegisteredStatus(addr)
+  async function checkRegisteredStatus(addr)
 {
   let result = await instance.methods.isRegistered(session.id,addr).call();
   return result;
 }
-
-const setStatus = async (addr)=>
-  {
-    let result = await checkRegisteredStatus(addr);
-    setRegistered(result);
-  }
 
 const [sessionPhase, setSessionPhase] = useState("")
 const [winner, setWinner] = useState("");
@@ -26,59 +14,112 @@ const [registered, setRegistered] = useState(null);
 const [owner, setOwner] = useState(false);
 // only approved voter and approved candidates
 const [participants, setParticipants] = useState([]);
-
 const [joinVoterClassParams, setJoinVoterClassParams] = useState("btn mb-2 btn-warning text-white visible");
-const [joinCandidateClassParams, setCandidateClassParams] = useState("btn mb-2 btn-danger text-white visible");
-let participantList = participants.map((elem,index)=> <Participant key={index} participant={elem}/>);
+const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("btn mb-2 btn-danger text-white visible");
+const [winnerClassParams, setWinnerClassParams] = useState("list-group-item invisible");
+
+let participantList = participants.map((elem,index)=> <Participant instance={instance} owner={owner} myAddr={myAddr} session={session} sessionphase={sessionPhase} key={index} participant={elem}/>);
 
 useEffect(()=>
 {
-  setStatus(myAddr);
 },[participants])
 
 
 useEffect(() => {
-  setStatus(myAddr);
 }, [myAddr])
 
+const countWinner = async ()=>
+{
+  console.log("counting the votes");
+  let winningCandidate = {address:"",count:0};
+  for(let p in participants)
+  {
+    let count = await instance.methods.getVoteCount(session.id,p.id).call();
+    if (winningCandidate.count <= count)
+    {
+      winningCandidate.address = p.id;
+    } 
+  }
+  setWinner(winningCandidate.address);
+  setWinnerClassParams("list-group-item visible");
+}
 
-console.log("participants",{participantList});
 
 
 useEffect(()=>
 {
-  // both admin and normal participant should see the list of candidates
-  // delete the voter or candidate that is approved from the joinVrequest and JoinCrequest
-  instance.events.candidateApproved({fromBlock:0}).on("data",(evt=>
-    {
-    }));  
-    
-  instance.events.voterApproved({fromBlock:0}).on("data",(evt=>
-    {
-    }));  
-    
+  switch (sessionPhase)
+  {
+    case "Registration":
+    break;
+    case "Voting":
+      setJoinVoterClassParams("btn mb-2 btn-warning text-white invisible");
+      setjoinCandidateClassParams("btn mb-2 btn-warning text-white invisible");
+    break;
+    case "Locked":
+      // count the votes and display winner
+      setJoinVoterClassParams("btn mb-2 btn-warning text-white invisible");
+      setjoinCandidateClassParams("btn mb-2 btn-warning text-white invisible");
+      countWinner();
+    break;  
+  }
+},[sessionPhase])
+
+useEffect(()=>
+{
+  console.log("address changed",myAddr);
   if(myAddr === session.owner)
   {
     setOwner(true);
-    // update the participants list to set the votingSesisonRequests and candidates SessionRequest 
-    // such that only not approved users get added t participants list
-    // verify if registered with checkregistered
-    // get the list of not registered voters to approve them if admin
-    instance.events.joinSessionVoterRequest({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async (evt)=>
+    
+    //remove voter from the list of participants if he exists and update candidate status to approved if he exists
+    instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(evt=>
     {
+    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
+    {
+
+      let found = participants.some(p=> p.id === evt.returnValues.voter)
+      if(found === true)
+      {
+        console.log("should remove element from list");
+      }
+    }}));  
+    instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
+    {
+    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
+    {
+      let candidate = await instance.methods.participants(evt.returnValues.candidate).call();
+      const found = participants.some(p=> parseInt(p.id) === parseInt(candidate.id));
+      if(found===false)
+      {
+        candidate.status= "approved";
+        setParticipants(prev=> [...prev,candidate]);      
+      }
+    }}));
+    
+    
+    instance.events.joinSessionVoterRequest({fromBlock:0,filter:{sessionID:parseInt(session.id)}}).on("data",(async (evt)=>
+    {
+      //workAround since filter does not work properly
+    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
+    {
+
           let voterAddr = evt.returnValues.user;
           let result = await checkRegisteredStatus(voterAddr);
           switch (result.status) {
             case (false):
               let participant = await instance.methods.participants(voterAddr).call();
               participant.type= "voter";
+              participant.status= "not Approved";
               setParticipants(prev => [...prev,participant]);
               break;
       }
+    }
     }));
-  }
+  
     instance.events.joinSessionCandidateRequest({fromBlock:0,filter:{sessionID:session.id}}).on("data",async (evt)=>
     {
+    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID)){
           let candidateAddr = evt.returnValues.user;
           let result = await checkRegisteredStatus(candidateAddr);
           switch (result.status) {
@@ -87,17 +128,63 @@ useEffect(()=>
               participant.type="candidate";
               setParticipants(prev => [...prev,participant]);
               break;
-    }});
-},[]);
+    }}});
+  
+  }else
+  {
+    instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
+    {
+    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
+    {
+      let candidate = await instance.methods.participants(evt.returnValues.candidate).call();
+      setParticipants(prev=> [...prev,candidate]);      
+    }}));  
+
+  }
+    //get current unix epoch time and compare it with deadline and set handler
+    let currentUnixTime = Math.floor((Date.now()/1000));
+    console.log("currenTime::",currentUnixTime);
+    if (parseInt(session.votingDeadline) > currentUnixTime)
+    {
+      if (parseInt(session.registrationDeadline) > currentUnixTime)
+      {
+          setSessionPhase("Registration");
+          let timeLeft =parseInt(session.registrationDeadline) - currentUnixTime;
+          setTimeout(()=>
+          {
+            console.log("voting phase Reached");
+            setSessionPhase("Voting");
+            setTimeout(()=>{
+              console.log("voting phase Ended, Count the votes");
+              setSessionPhase('Locked');
+            },(parseInt(session.votingDeadline) - parseInt(session.registrationDeadline))*1000);     
+          },timeLeft *1000)
+      }else
+      {
+        let timeLeft = parseInt(session.votingDeadline) - currentUnixTime;
+        setSessionPhase("Voting");
+        setTimeout(()=>
+        {
+            console.log("voting phase Ended, Count the votes");
+            setSessionPhase('Locked');
+        },timeLeft*1000);
+      }
+    }else
+    {
+      console.log("session Finished");
+      console.log("votingDeadline!!",parseInt(session.votingDeadline));
+      setSessionPhase("Locked")
+    }
+},[myAddr]);
 
 const joinSessionAsCandidate = async()=>
 {
-    instance.methods.registerCandidate(session.id).send({from:myAddr});
+    await instance.methods.registerCandidate(session.id).send({from:myAddr});
 }
 
 const joinSessionAsVoter = async ()=>
 {
-  let receipt = await instance.methods.registerVoter(session.id).send({from:myAddr});
+  await instance.methods.registerVoter(session.id).send({from:myAddr});
 }
 
     return (
@@ -107,10 +194,11 @@ const joinSessionAsVoter = async ()=>
                 <p class="card-title p-2 w-100">Session#{session.id}</p>
                 <p class="card-text p-2 w-100">{session.info}</p>
             </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Candidates size:{session.maxCandidateSize}</li>
+                <ul class="list-group">
+                    <span class="list-group-item">Candidates size:{session.maxCandidateSize}</span>
                     <li class="list-group-item">voters size:{session.maxVotersSize}</li>
-                    <li class="list-group-item">Phase:{sessionPhase}</li>
+                    <li class="list-group-item">{sessionPhase} Phase</li>
+                    <li class={winnerClassParams}>{winner}</li>
                 </ul>
             <div class="card-body">
               <div class={joinVoterClassParams} onClick={joinSessionAsVoter}>Register as voter</div>

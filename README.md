@@ -8,7 +8,7 @@
 
 - Dvote is a General Decentralized Voting Dapp that is Open, Secure and customizable.
 
-- everyone is allowed to create his own voting session and approve which candidates and voters are allowed to participate
+- everyone is allowed to create his own voting sessions and approve which candidates or voters are allowed to participate, this step is required to avoid spam
 
 - Each voting session has two phases, registration phase and voting phase
 

@@ -8,7 +8,7 @@ function App() {
   const [web3, setWeb3] = useState(null);
   const [accounts, setAccounts] = useState([]);
   const [contractInstance, setContractInstance] = useState(null);
-
+  const [myAddr, setMyAddr] = useState(null);
   useEffect(() => {
     const init = async () => {
       try {
@@ -18,11 +18,12 @@ function App() {
         const instance = new web3.eth.Contract(
           DvoteContract.abi,
           web3.utils.toChecksumAddress(
-            "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+            "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
           )
         );
 
         setWeb3(web3);
+        setMyAddr(Accounts[0]);
         setAccounts(Accounts);
         setContractInstance(instance);
       } catch (error) {
@@ -33,6 +34,11 @@ function App() {
       }
     };
     init();
+
+    window.ethereum.on("accountsChanged", async (accounts) => {
+      setAccounts(accounts);
+      setMyAddr(accounts[0]);
+    });
   }, []);
 
   if (!web3) {
@@ -53,11 +59,7 @@ function App() {
   } else {
     return (
       <React.Fragment>
-        <HomeScreen
-          web3={web3}
-          accounts={accounts}
-          instance={contractInstance}
-        />
+        <HomeScreen web3={web3} myAddr={myAddr} instance={contractInstance} />
       </React.Fragment>
     );
   }
