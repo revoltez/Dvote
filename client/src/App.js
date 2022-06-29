@@ -3,6 +3,7 @@ import DvoteContract from "./artifacts/contracts/Dvote.sol/Dvote.json";
 import getWeb3 from "./getWeb3";
 import HomeScreen from "./components/HomeScreen";
 import "./App.css";
+import { Loader, Group } from "@mantine/core";
 
 function App() {
   const [web3, setWeb3] = useState(null);
@@ -18,7 +19,7 @@ function App() {
         const instance = new web3.eth.Contract(
           DvoteContract.abi,
           web3.utils.toChecksumAddress(
-            "0xc5a5C42992dECbae36851359345FE25997F5C42d"
+            "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690"
           )
         );
 
@@ -43,18 +44,9 @@ function App() {
 
   if (!web3) {
     return (
-      <React.Fragment>
-        <p align="center" padding-top="30px">
-          Loading Dapp
-        </p>
-        <div class="d-flex justify-content-center top-50 start-50 translate-middle">
-          <div
-            class="spinner-grow"
-            style={{ width: "6rem", height: "6rem" }}
-            role="status"
-          ></div>
-        </div>
-      </React.Fragment>
+      <Group position="center" style={{ height: "100vh" }}>
+        <Loader color="violet" size={50} variant="bars" />
+      </Group>
     );
   } else {
     return (

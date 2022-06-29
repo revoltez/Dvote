@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import { Button } from '@mantine/core';
 
 export default function Login({instance,username,info,uri,onChange,myAddr,setRegistered}) {
 const [setInfo,setUserName,setUri] = onChange;
@@ -27,7 +27,7 @@ return (
       <input class="form-control border" placeholder="profile picture URI " name="uri" type="text"></input>
       <input class="form-control border" placeholder="Personal informatiion" name="info" type="text"></input>
       <input class="form-control border" placeholder="UserName" name="username" type="text"></input>
-      <button class="btn-info form-control text-center text-white" type="submit">Register</button>
+      <Button radius="xs" variant="outline" color="violet">Register</Button>
       </div>
       </form>
     </div>
