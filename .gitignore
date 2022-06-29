@@ -1,4 +1,5 @@
 node_modules
 client/src/artifacts
 client/node_modules
+cache
 
