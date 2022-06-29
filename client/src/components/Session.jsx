@@ -19,18 +19,16 @@ const [participants, setParticipants] = useState([]);
 const [joinVoterClassParams, setJoinVoterClassParams] = useState("btn mb-2 btn-warning text-white visible");
 const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("btn mb-2 btn-danger text-white visible");
 const [winnerClassParams, setWinnerClassParams] = useState("list-group-item invisible");
+const [participantList, setParticipantList] = useState([]);
+const [reset, setReset] = useState(false);
 
-
-let participantList = participants.map((elem,index)=> <Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} key={index} participant={elem}/>);
-
+console.log("participants::::",participants);
 // this could be modified depending ton how you treat cases of equality
 const countWinner = async ()=>
 {
   let winningCandidate = {name:"",count:0};
-  console.log(participants);
   participants.forEach(async (p)=>{
   {
-    console.log("p address::",p.id);
     let count = await instance.methods.getVoteCount(session.id,p.id).call();
     if (winningCandidate.count <= count)
     {
@@ -41,6 +39,14 @@ const countWinner = async ()=>
   setWinnerClassParams("list-group-item visible");
 })
 }
+
+
+useEffect(()=>
+{
+  verifyOwnership();
+  let list = participants.map((elem,index)=> <Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} key={index} participant={elem}/>); 
+  setParticipantList(list);
+},[participants,myAddr])
 
 useEffect(()=>
 {
@@ -59,7 +65,7 @@ useEffect(()=>
       countWinner();
     break;  
   }
-},[sessionPhase,participants])
+},[sessionPhase])
 
 const checkRequestStatus = async (addr)=>
 {
@@ -89,10 +95,23 @@ useEffect(()=>
   }
 },[requested]);
 
+const verifyOwnership= ()=>
+{
+  if(myAddr === session.owner)
+  {
+    setOwner(true);
+    setRequested(true);
+    return true;
+  }else
+  {
+    return false;
+  }
+}
+
 useEffect(()=>
 {
 
-  if(myAddr === session.owner)
+  if(verifyOwnership())
   {
     setOwner(true);
     setRequested(true);
@@ -101,10 +120,14 @@ useEffect(()=>
     {
     if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
     {
-      let found = participants.some((p)=> parseInt(p.id) === parseInt(evt.returnValues.voter))
+      let index;
+      let found = participants.some((p,i)=>{
+        index = i;
+        return  (parseInt(p.id) === parseInt(evt.returnValues.voter))
+        })
       if(found === true)
       {
-        console.log("should remove element from list with index");
+        console.log("should remove element from list with index",index);
       }
     }}));  
     instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
@@ -204,10 +227,9 @@ useEffect(()=>
     }else
     {
       console.log("session Finished");
-      console.log("votingDeadline!!",parseInt(session.votingDeadline));
       setSessionPhase("Locked")
     }
-},[myAddr]);
+},[]);
 
 const joinSessionAsCandidate = async()=>
 {
