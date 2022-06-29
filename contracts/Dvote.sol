@@ -16,7 +16,7 @@ contract Dvote {
         string info;
         uint8 maxVotersSize;
         uint8 maxCandidateSize;
-        mapping(address => bool) registered; // represents who requested to register for dvote session
+        mapping(address => bool) requested; // represents who requested to register for dvote session
         mapping(address => bool) voters; // bool referr to whether voter is approved by admin to vote or not
         mapping(address => bool) candidates; // bool referr to whether candidate is approved by admin to vote or not
         mapping(address => uint16) votes;
@@ -51,7 +51,7 @@ contract Dvote {
         emit sessionCreated(sessions.length);
     }
 
-    //
+    // since participant list is a mapping  nested in session therefore cant access it globally
     function isRegistered(uint8 sessionID, address user)
         public
         view
@@ -123,10 +123,10 @@ contract Dvote {
             "User already registered in this session"
         );
         require(
-            sessions[sessionID].registered[msg.sender] == false,
+            sessions[sessionID].requested[msg.sender] == false,
             "user already requested registry"
         );
-        sessions[sessionID].registered[msg.sender] = true;
+        sessions[sessionID].requested[msg.sender] = true;
         emit joinSessionVoterRequest(sessionID, msg.sender);
     }
 
@@ -140,11 +140,19 @@ contract Dvote {
             "User already registered in this session"
         );
         require(
-            sessions[sessionID].registered[msg.sender] == false,
+            sessions[sessionID].requested[msg.sender] == false,
             "user already requested registry"
         );
-        sessions[sessionID].registered[msg.sender] = true;
+        sessions[sessionID].requested[msg.sender] = true;
         emit joinSessionCandidateRequest(sessionID, msg.sender);
+    }
+
+    function requested(uint8 sessionID, address user)
+        external
+        view
+        returns (bool requestStatus)
+    {
+        return sessions[sessionID].requested[user];
     }
 
     function approveVoter(uint8 sessionID, address voter)
@@ -190,9 +198,7 @@ contract Dvote {
         registered(msg.sender)
     {
         require(
-            sessions[sessionID].registrationDeadline >= block.timestamp &&
-                sessions[sessionID].registrationDeadline <=
-                sessions[sessionID].votingDeadline,
+            block.timestamp <= sessions[sessionID].votingDeadline,
             "Action not performed during voting phase"
         );
         require(

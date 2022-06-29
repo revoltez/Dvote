@@ -1,23 +1,62 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import avatar from "../images/PhotoAvatar.jpg"
-export default function Participant({participant,instance,session,myAddr,owner}) {
+export default function Participant({participant,instance,session,myAddr,owner,registered,sessionPhase}) {
   
   // get state of participant and  hange the class params depending on his state
-  let voteClassParams = "btn btn-warning text-white visible";
-  let approveClassParams = "btn btn-danger text-white invisible";
-  let statusClassParams = "text-primary text-white invisible";
+  const [voteClassParams, setVoteClassParams] = useState("btn btn-warning text-white visible");
+  const [approveClassParams, setApproveClassParams] = useState("btn btn-danger text-white invisible");
+  const [statusClassParams, setStatusClassParams] = useState("text-primary text-white invisible");
+  const [voted, setVoted] = useState(false);
+  useEffect(()=>
+  {
+    switch (registered)
+    {
+      case true:
+        console.log("got approved to participate in session");
+      break;
+    }
+  },[registered])
+
+useEffect(()=>
+  {
+    switch (voted) {
+      case true:
+          setVoteClassParams("btn btn-warning text-white invisible");
+        break;
+      default:
+        break;
+    }
+  },[voted])
+
+useEffect(()=>
+{
+    switch (sessionPhase) {
+      case "Locked":
+          setVoteClassParams("btn btn-warning text-white invisible");
+        break;
+    
+      default:
+        break;
+    }
+},[sessionPhase])
+
+
+useEffect(()=>
+{
   if (owner)
   {
-    statusClassParams="text-primary text-white invisible"
+    setStatusClassParams("text-primary text-white invisible")
     if(participant.status !== "approved")
     {
-        approveClassParams = "btn btn-danger ml-2 text-white visible";
+        setApproveClassParams("btn btn-danger ml-2 text-white visible");
     }
   }
+});
 
 const vote = async()=>
 {
   await instance.methods.vote(session.id,participant.id).send({from:myAddr});
+  setVoted(true);
 }
 
 const approve= async()=>

@@ -2,6 +2,7 @@ import React, { Component, useEffect, useState } from 'react';
 import Participant from './Participant';
 export default function Session({session,myAddr,instance}) {
 
+// checks whether user has been approved by admin or not  
 async function checkRegisteredStatus(addr)
 {
   let result = await instance.methods.isRegistered(session.id,addr).call();
@@ -11,6 +12,7 @@ async function checkRegisteredStatus(addr)
 const [sessionPhase, setSessionPhase] = useState("")
 const [winner, setWinner] = useState("");
 const [registered, setRegistered] = useState(null);
+const [requested, setRequested] = useState(null);
 const [owner, setOwner] = useState(false);
 // only approved voter and approved candidates
 const [participants, setParticipants] = useState([]);
@@ -18,7 +20,8 @@ const [joinVoterClassParams, setJoinVoterClassParams] = useState("btn mb-2 btn-w
 const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("btn mb-2 btn-danger text-white visible");
 const [winnerClassParams, setWinnerClassParams] = useState("list-group-item invisible");
 
-let participantList = participants.map((elem,index)=> <Participant instance={instance} owner={owner} myAddr={myAddr} session={session} sessionphase={sessionPhase} key={index} participant={elem}/>);
+
+let participantList = participants.map((elem,index)=> <Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} key={index} participant={elem}/>);
 
 // this could be modified depending ton how you treat cases of equality
 const countWinner = async ()=>
@@ -58,22 +61,50 @@ useEffect(()=>
   }
 },[sessionPhase,participants])
 
+const checkRequestStatus = async (addr)=>
+{
+  let result = await instance.methods.requested(session.id,addr).call();
+  return result.requestStatus;
+}
 useEffect(()=>
 {
+  const requestStatus = async ()=>
+  {
+    setRequested(await checkRequestStatus(myAddr));
+  }
+  requestStatus();
+
+},[])
+
+useEffect(()=>
+{
+  switch (requested) {
+    case true:
+        setJoinVoterClassParams("btn mb-2 btn-warning text-white invisible");
+        setjoinCandidateClassParams("btn mb-2 btn-warning text-white invisible");
+      break;
+  
+    default:
+      break;
+  }
+},[requested]);
+
+useEffect(()=>
+{
+
   if(myAddr === session.owner)
   {
     setOwner(true);
-    
+    setRequested(true);
     //remove voter from the list of participants if he exists and update candidate status to approved if he exists
     instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(evt=>
     {
     if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
     {
-
-      let found = participants.some(p=> p.id === evt.returnValues.voter)
+      let found = participants.some((p)=> parseInt(p.id) === parseInt(evt.returnValues.voter))
       if(found === true)
       {
-        console.log("should remove element from list");
+        console.log("should remove element from list with index");
       }
     }}));  
     instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
@@ -99,6 +130,7 @@ useEffect(()=>
           let voterAddr = evt.returnValues.user;
           let result = await checkRegisteredStatus(voterAddr);
           switch (result.status) {
+            // means that the user has not yet beein approved by session Admin
             case (false):
               let participant = await instance.methods.participants(voterAddr).call();
               participant.type= "voter";
@@ -130,7 +162,16 @@ useEffect(()=>
     {
       let candidate = await instance.methods.participants(evt.returnValues.candidate).call();
       setParticipants(prev=> [...prev,candidate]);      
-    }}));  
+    }}));
+    
+    instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id,voter:myAddr}}).on("data",async (evt)=>
+    {
+      let result = await checkRegisteredStatus(myAddr);
+      if (evt.returnValues.voter === myAddr)
+      {
+          setRegistered(result.status);
+      }
+    });
 
   }
     //get current unix epoch time and compare it with deadline and set handler
@@ -171,11 +212,13 @@ useEffect(()=>
 const joinSessionAsCandidate = async()=>
 {
     await instance.methods.registerCandidate(session.id).send({from:myAddr});
+    setRequested(true);
 }
 
 const joinSessionAsVoter = async ()=>
 {
   await instance.methods.registerVoter(session.id).send({from:myAddr});
+  setRequested(true);
 }
 
     return (
