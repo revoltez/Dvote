@@ -15,12 +15,6 @@ export default function Participant({participant,instance,session,myAddr,owner})
     }
   }
 
-
-  useEffect(()=>
-  {
-
-  },[])
-
 const vote = async()=>
 {
   await instance.methods.vote(session.id,participant.id).send({from:myAddr});

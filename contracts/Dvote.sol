@@ -16,7 +16,7 @@ contract Dvote {
         string info;
         uint8 maxVotersSize;
         uint8 maxCandidateSize;
-        mapping(address => bool) registered;
+        mapping(address => bool) registered; // represents who requested to register for dvote session
         mapping(address => bool) voters; // bool referr to whether voter is approved by admin to vote or not
         mapping(address => bool) candidates; // bool referr to whether candidate is approved by admin to vote or not
         mapping(address => uint16) votes;
@@ -47,6 +47,7 @@ contract Dvote {
         newSession.owner = payable(msg.sender);
         newSession.maxCandidateSize = maxCandidateSize;
         newSession.maxVotersSize = maxVotersSize;
+        newSession.voters[msg.sender] = true;
         emit sessionCreated(sessions.length);
     }
 
@@ -163,6 +164,7 @@ contract Dvote {
         emit voterApproved(sessionID, voter);
     }
 
+    // approve as voter as well to allow him to vote
     function approveCandidate(uint8 sessionID, address candidate)
         external
         registered(candidate)
@@ -177,6 +179,7 @@ contract Dvote {
             "candidate already approved"
         );
         sessions[sessionID].candidates[candidate] = true;
+        sessions[sessionID].voters[candidate] = true;
         emit candidateApproved(sessionID, candidate);
     }
 

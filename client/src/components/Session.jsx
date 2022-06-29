@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState } from 'react';
 import Participant from './Participant';
 export default function Session({session,myAddr,instance}) {
 
-  async function checkRegisteredStatus(addr)
+async function checkRegisteredStatus(addr)
 {
   let result = await instance.methods.isRegistered(session.id,addr).call();
   return result;
@@ -20,31 +20,24 @@ const [winnerClassParams, setWinnerClassParams] = useState("list-group-item invi
 
 let participantList = participants.map((elem,index)=> <Participant instance={instance} owner={owner} myAddr={myAddr} session={session} sessionphase={sessionPhase} key={index} participant={elem}/>);
 
-useEffect(()=>
-{
-},[participants])
-
-
-useEffect(() => {
-}, [myAddr])
-
+// this could be modified depending ton how you treat cases of equality
 const countWinner = async ()=>
 {
-  console.log("counting the votes");
-  let winningCandidate = {address:"",count:0};
-  for(let p in participants)
+  let winningCandidate = {name:"",count:0};
+  console.log(participants);
+  participants.forEach(async (p)=>{
   {
+    console.log("p address::",p.id);
     let count = await instance.methods.getVoteCount(session.id,p.id).call();
     if (winningCandidate.count <= count)
     {
-      winningCandidate.address = p.id;
+      winningCandidate.name = p.name;
     } 
   }
-  setWinner(winningCandidate.address);
+  setWinner(winningCandidate.name);
   setWinnerClassParams("list-group-item visible");
+})
 }
-
-
 
 useEffect(()=>
 {
@@ -63,11 +56,10 @@ useEffect(()=>
       countWinner();
     break;  
   }
-},[sessionPhase])
+},[sessionPhase,participants])
 
 useEffect(()=>
 {
-  console.log("address changed",myAddr);
   if(myAddr === session.owner)
   {
     setOwner(true);
@@ -143,7 +135,6 @@ useEffect(()=>
   }
     //get current unix epoch time and compare it with deadline and set handler
     let currentUnixTime = Math.floor((Date.now()/1000));
-    console.log("currenTime::",currentUnixTime);
     if (parseInt(session.votingDeadline) > currentUnixTime)
     {
       if (parseInt(session.registrationDeadline) > currentUnixTime)
@@ -198,7 +189,7 @@ const joinSessionAsVoter = async ()=>
                     <span class="list-group-item">Candidates size:{session.maxCandidateSize}</span>
                     <li class="list-group-item">voters size:{session.maxVotersSize}</li>
                     <li class="list-group-item">{sessionPhase} Phase</li>
-                    <li class={winnerClassParams}>{winner}</li>
+                    <li class={winnerClassParams}>Winning Candidate:{winner}</li>
                 </ul>
             <div class="card-body">
               <div class={joinVoterClassParams} onClick={joinSessionAsVoter}>Register as voter</div>

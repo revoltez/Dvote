@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/ezio/Desktop/Dapps/hardhatdvote/contracts/Dvote.sol": {
-      "lastModificationDate": 1656414230059,
-      "contentHash": "90547bad8000312b9375341b10f0f9c4",
+      "lastModificationDate": 1656495726156,
+      "contentHash": "3167ecc5d496131b34a0f3944b9cd12b",
       "sourceName": "contracts/Dvote.sol",
       "solcConfig": {
         "version": "0.8.0",
