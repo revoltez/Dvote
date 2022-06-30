@@ -1,5 +1,7 @@
 import React, { Component, useEffect, useState } from 'react';
 import Participant from './Participant';
+import "../styles/session.css";
+import {Badge} from "@mantine/core" 
 export default function Session({session,myAddr,instance}) {
 
 // checks whether user has been approved by admin or not  
@@ -244,6 +246,17 @@ const joinSessionAsVoter = async ()=>
 }
 
     return (
+      <div class="card">
+          <div class="card-header">
+          </div>
+          <p class="card-title">
+          </p>
+          <p class="badge">Badge</p>
+          <p class="card-description"></p>
+          <button class=""></button>
+      </div>
+
+      /*
       <div class="row border" style={{height:"400px"}}>
             <div class="col-4 border card">
               <div class="card-body">
@@ -266,6 +279,6 @@ const joinSessionAsVoter = async ()=>
               {participantList}
               </div>
             </div>
-      </div> 
+      </div> */
       );
 }

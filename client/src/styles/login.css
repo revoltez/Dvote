@@ -1,7 +1,7 @@
 .body
 {
     display: flex;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     background-color: #1a1b1e;
     justify-content: center;
@@ -30,7 +30,7 @@
 .description-container > p
 {
     color: white;
-    padding: 10px;
+    padding: 15px;
     margin-left : 20%;
     margin-right: 20%;
     border: 2px solid #3d24a9;
@@ -57,7 +57,7 @@
 .form-input
 {
     border: 1px solid #1a1b1e;
-    padding: 5px;
+    padding: 10px;
     padding-left: 10px;
     width: 50%;
     background-color: #151417;
@@ -69,6 +69,7 @@
 .btn-form
 {
     border: 1px solid #7148e9;
+    padding: 5px;
     border-radius: 8%;
     background-color: #1a1b1e;
     width: auto;
@@ -78,7 +79,7 @@
 }
 #logo
 {
-    margin-top: 5%;
+    margin-top: 3%;
     height: 50%;
     width: 30%;
 }

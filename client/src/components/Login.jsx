@@ -2,10 +2,10 @@ import React, { Component, useState } from 'react'
 import { Button } from '@mantine/core';
 import "../styles/login.css";
 import voting_box from "../images/voting_box.png";
-import logo from "../images/Logo.png"
+import logo from "../images/logo.png"
 import { Transition } from '@mantine/core';
 export default function Login({instance,username,info,uri,onChange,myAddr,setRegistered}) {
-const [setInfo,setUserName,setUri] = onChange;
+const [setInfo,setUserName,setUri,setHomeOpened] = onChange;
 const [opened, setOpened] = useState(false);
 const register = async (event)=>
 {
@@ -21,7 +21,7 @@ const register = async (event)=>
     setRegistered(true)
   });
 }
-
+setHomeOpened(false);
 setTimeout(()=>
 {
   setOpened(true)
@@ -44,7 +44,7 @@ return (
       <form class="container-form" onSubmit={(event)=>register(event)}>
         <input class="form-input" placeholder="profile picture URI " name="uri" type="text"></input>
         <input class="form-input" placeholder="UserName" name="username" type="text"></input>
-        <textarea id="w3review" name="w3review" rows="4" cols="50" class="form-input" placeholder="Personal informatiion" name="info" type="text"></textarea>
+        <textarea id="w3review" name="w3review" rows="4" cols="50" class="form-input" placeholder="Introduce your self" name="info" type="text"></textarea>
         <button  class="btn-form" type="submit">Register</button>
       </form>
       </div>

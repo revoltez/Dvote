@@ -1,6 +1,5 @@
 import React, { Component, useEffect, useState } from 'react'
 import Session from './Session';
-import SessionModal from './SessionModal';
 export default function Sessions({instance,myAddr}) {
 
 const [sessions, setSessions] = useState([]);
@@ -26,9 +25,7 @@ const handleSessionCreatd =async (event)=>
 
 return (
   <React.Fragment>
-   <SessionModal instance={instance} myAddr={myAddr}></SessionModal> 
-  <h1 class="row">sesions List</h1>
-  <div class="conatiner">
+  <div class="card-conatiner">
       {sessionList}
   </div>
   </React.Fragment>

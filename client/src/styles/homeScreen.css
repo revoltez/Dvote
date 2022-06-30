@@ -1,0 +1,67 @@
+.home-body
+{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    color: white;
+    font-size: medium;
+}
+.home-header
+{
+    flex:1;
+    display: flex;
+    margin-top: 2%;
+    margin-left: 5%;
+    margin-right: 5%;
+    border: 2px solid #7148e9;
+    border-radius: 15px;
+    background-color: #151417;
+}
+
+.logo-container{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    margin-left: 1%;
+}
+#home-logo
+{
+    width: 140px;
+    display: flex;
+    margin-right: 3%;
+}
+#search
+{
+    border: 2px solid #202226;
+    padding: 10px;
+    padding-left: 10px;
+    width: 70%;
+    background-color: #151417;
+    border-radius: 20px;
+    color: white;
+
+}
+.parameters
+{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin-right: 1%;
+}
+
+#notification
+{
+    height: 30%;
+}
+.session-list
+{
+    flex: 5;
+    margin-top: 1%;
+    border-radius: 15px;
+    height: 100%;
+    margin-left: 5%;
+    margin-right: 5%;
+    background-color: #151417;
+}

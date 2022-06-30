@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import create_session from "../icons/create-session.png"
-
+import { Modal,useMantineTheme } from '@mantine/core';
 export default function SessionModal({instance,myAddr}) {
   
+const [open, setOpen] = useState(false);
+const theme = useMantineTheme();
 const createSession = async (event)=>
   {
     event.preventDefault(); 
@@ -16,6 +18,37 @@ const createSession = async (event)=>
 }
 
 return (
+<React.Fragment>
+<div class="modal">
+ <button class="btn-form" src={create_session} onClick={()=>{setOpen(true)}}>Create Session</button>
+ <Modal
+        opened={open}
+        onClose={() => setOpen(false)}
+        title="Create Session"
+        transition="skew-up"
+        transitionDuration={400}
+        transitionTimingFunction="ease"
+        size="70%"
+      overlayColor='dark'
+      overlayOpacity={0.55}
+      overlayBlur={3}
+      >
+    <form class="container-form" onSubmit={(event)=>{createSession(event)}}>
+        <textarea class="form-input" placeholder="Session General Information " name="info" type="text"></textarea>
+        <input class="form-input" placeholder="maximum voters size" name="maxVotersSize" type="number"></input>
+        <input class="form-input" placeholder="maximum candidate size" name="maxCandidateSize" type="number"></input>
+        <input class="form-input" placeholder="Registration Deadline" name="registrationDeadline" type="number"></input>
+        <input class="form-input" placeholder="Voting Deadline" name="votingDeadline" type="number"></input>
+        <button class="btn-form" type="submit">Create Session</button>
+    </form>
+</Modal>
+
+
+  </div>
+  
+
+</React.Fragment>
+  /*
 <React.Fragment>
   <div class="row btn border border-primary" data-toggle="modal" data-target="#exampleModalCenter">
       <img class="column" src={create_session}></img>
@@ -34,16 +67,6 @@ return (
       </div>
       <div class="modal-body">
     <div class="container">
-    <form onSubmit={(event)=>{createSession(event)}}>
-    <div class="form-group" >    
-        <input class="form-control border" placeholder="Session General Information " name="info" type="text"></input>
-        <input class="form-control border mt-2" placeholder="maximum voters size" name="maxVotersSize" type="number"></input>
-        <input class="form-control border mt-2" placeholder="maximum candidate size" name="maxCandidateSize" type="number"></input>
-        <input class="form-control border mt-2" placeholder="Registration Deadline" name="registrationDeadline" type="number"></input>
-        <input class="form-control border mt-2" placeholder="Voting Deadline" name="votingDeadline" type="number"></input>
-        <button class="btn-warning text-white form-control mt-2 mb-3" type="submit">Create Session</button>
-    </div>    
-    </form>
     </div>
       </div>
       <div class="modal-footer">
@@ -52,6 +75,6 @@ return (
     </div>
   </div>
 </div>
-</React.Fragment>
+</React.Fragment>*/
   )
 }
