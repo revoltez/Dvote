@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import create_session from "../icons/create-session.png"
 import { Modal,useMantineTheme } from '@mantine/core';
 export default function SessionModal({instance,myAddr}) {
   
@@ -20,7 +19,7 @@ const createSession = async (event)=>
 return (
 <React.Fragment>
 <div class="modal">
- <button class="btn-form" src={create_session} onClick={()=>{setOpen(true)}}>Create Session</button>
+ <button class="btn-form" onClick={()=>{setOpen(true)}}>Create Session</button>
  <Modal
         opened={open}
         onClose={() => setOpen(false)}

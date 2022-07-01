@@ -48,6 +48,7 @@ contract Dvote {
         newSession.maxCandidateSize = maxCandidateSize;
         newSession.maxVotersSize = maxVotersSize;
         newSession.voters[msg.sender] = true;
+        newSession.requested[msg.sender] = true;
         emit sessionCreated(sessions.length);
     }
 

@@ -24,10 +24,8 @@ const handleSessionCreatd =async (event)=>
 }
 
 return (
-  <React.Fragment>
-  <div class="card-conatiner">
+  <div class="session-list-container">
       {sessionList}
   </div>
-  </React.Fragment>
   )
 }

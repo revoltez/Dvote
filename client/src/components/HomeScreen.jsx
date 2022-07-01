@@ -40,7 +40,7 @@ useEffect(() => {
 setTimeout(()=>
 {
   setHomeOpened(true);
-},200)
+},400)
 
   if (registered === false)
   {

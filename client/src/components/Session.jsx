@@ -18,13 +18,14 @@ const [requested, setRequested] = useState(null);
 const [owner, setOwner] = useState(false);
 // only approved voter and approved candidates
 const [participants, setParticipants] = useState([]);
-const [joinVoterClassParams, setJoinVoterClassParams] = useState("btn mb-2 btn-warning text-white visible");
-const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("btn mb-2 btn-danger text-white visible");
+const [adminClassParams, setAdminClassParams] = useState("invisible");
+const [sessionPhaseClassParams, setsessionPhaseClassParams] = useState("");
+const [joinVoterClassParams, setJoinVoterClassParams] = useState("");
+const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("");
 const [winnerClassParams, setWinnerClassParams] = useState("list-group-item invisible");
 const [participantList, setParticipantList] = useState([]);
 const [reset, setReset] = useState(false);
 
-console.log("participants::::",participants);
 // this could be modified depending ton how you treat cases of equality
 const countWinner = async ()=>
 {
@@ -45,67 +46,79 @@ const countWinner = async ()=>
 
 useEffect(()=>
 {
-  verifyOwnership();
   let list = participants.map((elem,index)=> <Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} key={index} participant={elem}/>); 
   setParticipantList(list);
-},[participants,myAddr])
-
-useEffect(()=>
-{
-  switch (sessionPhase)
-  {
-    case "Registration":
-    break;
-    case "Voting":
-      setJoinVoterClassParams("btn mb-2 btn-warning text-white invisible");
-      setjoinCandidateClassParams("btn mb-2 btn-warning text-white invisible");
-    break;
-    case "Locked":
-      // count the votes and display winner
-      setJoinVoterClassParams("btn mb-2 btn-warning text-white invisible");
-      setjoinCandidateClassParams("btn mb-2 btn-warning text-white invisible");
-      countWinner();
-    break;  
-  }
-},[sessionPhase])
-
-const checkRequestStatus = async (addr)=>
-{
-  let result = await instance.methods.requested(session.id,addr).call();
-  return result.requestStatus;
-}
-useEffect(()=>
-{
-  const requestStatus = async ()=>
-  {
-    setRequested(await checkRequestStatus(myAddr));
-  }
-  requestStatus();
-
-},[])
+},[participants])
 
 useEffect(()=>
 {
   switch (requested) {
     case true:
-        setJoinVoterClassParams("btn mb-2 btn-warning text-white invisible");
-        setjoinCandidateClassParams("btn mb-2 btn-warning text-white invisible");
+        setJoinVoterClassParams("invisible");
+        setjoinCandidateClassParams("invisible");
       break;
-  
+    case false:
+      {
+        console.log("i got triggered");
+        setJoinVoterClassParams("btn-form-voter");
+        setjoinCandidateClassParams("btn-form-candidate");
+      }
+      break;
     default:
       break;
   }
-},[requested]);
+  switch (sessionPhase)
+  {
+    case "Registration":
+      setSessionPhase("registration");
+      setsessionPhaseClassParams("registration")
+    break;
+    case "Voting":
+      setJoinVoterClassParams("invisible");
+      setjoinCandidateClassParams("invisible");
+      setsessionPhaseClassParams("voting");
+    break;
+    case "Locked":
+      // count the votes and display winner
+      setJoinVoterClassParams("invisible");
+      setjoinCandidateClassParams("invisible");
+      setsessionPhaseClassParams("locked");
+      countWinner();
+    break;  
+  }
+},[sessionPhase,requested])
+
+const checkRequestStatus = async (addr)=>
+{
+  let result = await instance.methods.requested(session.id,addr).call();
+  return result;
+}
+useEffect(()=>
+{
+  let result = verifyOwnership();
+  const requestStatus = async ()=>
+  {
+    let result = await checkRequestStatus(myAddr);
+    setRequested(result);
+  }
+  requestStatus();
+
+},[myAddr])
+
 
 const verifyOwnership= ()=>
 {
-  if(myAddr === session.owner)
+  if(parseInt(myAddr) === parseInt(session.owner))
   {
     setOwner(true);
     setRequested(true);
+    console.log("iam admin");
+    setAdminClassParams("admin-badge");
     return true;
   }else
   {
+    console.log("not admin");
+    setAdminClassParams("invisible")
     return false;
   }
 }
@@ -201,9 +214,9 @@ useEffect(()=>
   }
     //get current unix epoch time and compare it with deadline and set handler
     let currentUnixTime = Math.floor((Date.now()/1000));
-    if (parseInt(session.votingDeadline) > currentUnixTime)
+    if (parseInt(session.votingDeadline) > parseInt(currentUnixTime))
     {
-      if (parseInt(session.registrationDeadline) > currentUnixTime)
+      if (parseInt(session.registrationDeadline) > parseInt(currentUnixTime))
       {
           setSessionPhase("Registration");
           let timeLeft =parseInt(session.registrationDeadline) - currentUnixTime;
@@ -249,11 +262,21 @@ const joinSessionAsVoter = async ()=>
       <div class="card">
           <div class="card-header">
           </div>
-          <p class="card-title">
-          </p>
-          <p class="badge">Badge</p>
-          <p class="card-description"></p>
-          <button class=""></button>
+          <div class="card-title">
+            <p class="title">Session#{session.id}</p>
+            <div class={adminClassParams}>
+              <p >Admin</p>
+            </div>
+            <div class="registration-badge">
+              <button class={sessionPhaseClassParams}>{sessionPhase}</button>
+            </div>
+          </div>
+          <p class="card-description">{session.info}</p>
+          <div class="voting-info-items">
+            <button class={joinVoterClassParams}>Join as Voter</button>
+            <button class={joinCandidateClassParams}>Join as candidate</button>
+            <button class="btn-form-participants">Participants</button>
+          </div>
       </div>
 
       /*

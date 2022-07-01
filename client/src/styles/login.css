@@ -70,12 +70,17 @@
 {
     border: 1px solid #7148e9;
     padding: 5px;
-    border-radius: 8%;
     background-color: #1a1b1e;
     width: auto;
     margin-top: 2%;
+    padding: 10px;
     color: #7148e9;
     font-size: medium;
+}
+.btn-form:hover
+{
+    color: white;
+    background-color: #7148e9;
 }
 #logo
 {

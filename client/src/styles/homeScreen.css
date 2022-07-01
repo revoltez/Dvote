@@ -64,4 +64,185 @@
     margin-left: 5%;
     margin-right: 5%;
     background-color: #151417;
+    overflow: auto;
+}
+.session-list-container
+{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;   
+}
+.card
+{
+    width: 30%;
+    height: 40%;
+    margin:1%;
+    display: flex;
+    background-color: #25272a;
+}
+.card-title
+{
+    display: flex;
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
+}
+.title
+{
+    flex: 1;
+    color: #a9a9ad;
+    text-align: end;
+    font-weight: bold;
+    font-size: larger;
+    height: fit-content;
+    width: fit-content;
+    margin-right: 3%;
+}
+.admin-badge
+{
+    
+    color: #a9a9ad;
+    text-align: start;
+    font-size: small;
+    font-weight: bold;
+    height: fit-content;
+    width: fit-content;
+}
+.admin-badge > p
+{
+    color: #dd8c13;
+    width: fit-content;
+    height: fit-content;
+    border:1px solid #dd8c13;
+    padding: 5px;
+}
+
+.registration-badge
+{
+    margin-left: 3%;
+    flex: 1;
+}
+
+.card-description
+{
+    color: #848589;
+    margin-right: 5%;
+    margin-left: 5%;
+    text-align: center;
+    font-weight: lighter;
+    overflow: auto;
+}
+.voting-info-items
+{
+    display: flex;
+    margin:5px
+}
+.btn-form-voter
+{
+    color:#15abbe;
+    border: 1px solid #15abbe;
+    padding: 5px;
+    background-color: #1a1b1e;
+    width: auto;
+    font-size: smaller;
+    font-weight: bold;
+    margin:2%
+}
+.btn-form-candidate
+{
+    border: 1px solid #dd3445;
+    padding: 5px;
+    background-color: #1a1b1e;
+    width: fit-content;
+    color: #dd3445;
+    font-size: smaller;
+    font-weight: bold;
+    margin:2%
+}
+.btn-form-candidate:hover
+{
+    color: white;
+    background-color: #dd3445;
+}
+.btn-form-voter:hover{
+    color: white;
+    background-color: #15abbe;
+}
+
+.btn-form-participants
+{
+    border: 1px solid #40c156;
+    padding: 5px;
+    background-color: #1a1b1e;
+    width: fit-content;
+    color: #40c156;
+    font-size: smaller;
+    font-weight: bold;
+    width: fit-content;
+    height: fit-content;
+    margin:2%
+
+}
+
+.btn-form-participants:hover
+{
+    color: white;
+    background-color: #40c156;
+}
+
+.voting
+{
+    font-size: smaller;
+    padding: 5px;
+    font-weight: bold;
+    background-color: #1a1b1e;
+    color: white;
+    border: 1px solid #40c156;
+    height: fit-content;
+    width: fit-content;
+}
+.voting:hover
+{
+    color: white;
+    background-color: #40c156;
+}
+.registration{
+    
+    font-size: smaller;
+    font-weight: bold;
+    background-color: #1a1b1e;
+    color: #2188e1;
+    padding: 5px;
+    border: 1px solid #2188e1;
+    height: fit-content;
+    width: fit-content;
+}
+.registration:hover
+{
+    color: white;
+    background-color: #2188e1;
+}
+.locked
+{
+    
+    font-size: smaller;
+    padding: 5px;
+    font-weight: bold;
+    background-color: #1a1b1e;
+    color: #dd3445;
+    border: 1px solid #dd3445;
+    height: fit-content;
+    width: fit-content;
+}
+.locked:hover
+{
+    color: white;
+    background-color: #dd3445;
+}
+
+.invisible
+{
+    width: 0;
+    visibility: hidden;
 }
