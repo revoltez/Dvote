@@ -1,0 +1,103 @@
+.participant-list-container
+{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    margin-right: 2%;
+    margin-left: 2%;
+    overflow: auto;
+}
+
+.participant-card
+{   
+    display:flex;
+    flex-direction: column;
+    width: 20%;
+    border: 1px solid #151417;
+    border-radius: 15px;
+    margin-bottom: 5%;
+    margin-right: 3%;
+    background-color: #151417;
+}
+.card-heading
+{
+    flex: 1;
+    overflow:auto;
+}
+.card-heading >img
+{
+    width: 100%;
+    height: 100%;
+}
+.participant-card-body
+{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 5%;
+}
+.participant-title
+{
+    flex: 1;   
+}
+.participant-description
+{
+    flex: 2;
+}
+.participant-voting-btns
+{
+    flex: 1;
+    margin-bottom: 7%;
+}
+.vote-btn
+{
+    color: #40c156;
+    background-color: #151417;
+    border: 1px solid #40c156; 
+    padding: 10px;
+    margin:3%;
+    font-weight: bold;
+    border: 1px solid #40c156;
+    height: fit-content;
+    width: fit-content;
+}
+.vote-btn:hover
+{
+    color: white;
+    background-color: #40c156;
+}
+.approve-voter-btn
+{
+    color: #2188e1;
+    background-color: #151417;
+    border: 1px solid #2188e1; 
+    padding: 10px;
+    margin:3%;
+    font-weight: bold;
+    border: 1px solid #2188e1;
+    height: fit-content;
+    width: fit-content;
+}
+.approve-voter-btn:hover
+{
+    color: white;
+    background-color: #2188e1;
+}
+.approve-candidate-btn
+{
+    color: #dd3445;
+    background-color: #151417;
+    border: 1px solid #dd3445; 
+    padding: 10px;
+    margin:3%;
+    font-weight: bold;
+    border: 1px solid #dd3445;
+    height: fit-content;
+    width: fit-content;
+
+}
+.approve-candidate-btn:hover
+{
+    color: white;
+    background-color: #dd3445;
+}

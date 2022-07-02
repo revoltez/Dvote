@@ -24,6 +24,7 @@ const handleSessionCreatd =async (event)=>
 }
 
 return (
+  
   <div class="session-list-container">
       {sessionList}
   </div>

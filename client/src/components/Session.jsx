@@ -1,7 +1,9 @@
 import React, { Component, useEffect, useState } from 'react';
 import Participant from './Participant';
 import "../styles/session.css";
+import { Drawer } from '@mantine/core';
 import {Badge} from "@mantine/core" 
+import Participants from './Participants';
 export default function Session({session,myAddr,instance}) {
 
 // checks whether user has been approved by admin or not  
@@ -25,7 +27,7 @@ const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("");
 const [winnerClassParams, setWinnerClassParams] = useState("list-group-item invisible");
 const [participantList, setParticipantList] = useState([]);
 const [reset, setReset] = useState(false);
-
+const [openedDrawer, setOpenedDrawer] = useState(false);
 // this could be modified depending ton how you treat cases of equality
 const countWinner = async ()=>
 {
@@ -258,6 +260,11 @@ const joinSessionAsVoter = async ()=>
   setRequested(true);
 }
 
+const showParticipants = async ()=>
+{
+  setOpenedDrawer(true);
+}
+
     return (
       <div class="card">
           <div class="card-header">
@@ -273,10 +280,23 @@ const joinSessionAsVoter = async ()=>
           </div>
           <p class="card-description">{session.info}</p>
           <div class="voting-info-items">
-            <button class={joinVoterClassParams}>Join as Voter</button>
-            <button class={joinCandidateClassParams}>Join as candidate</button>
-            <button class="btn-form-participants">Participants</button>
+            <button class={joinVoterClassParams} onClick={joinSessionAsVoter}>Join as Voter</button>
+            <button class={joinCandidateClassParams} onClick={joinSessionAsCandidate}>Join as candidate</button>
+            <button class="btn-form-participants" onClick={showParticipants}>Participants</button>
           </div>
+
+          <Drawer
+              opened={openedDrawer}
+              onClose={() => setOpenedDrawer(false)}
+              title="Participants"
+              position ="bottom"
+              transition="rotate-left"
+              transitionDuration={200}
+              transitionTimingFunction="ease"
+              size="80%"
+            >
+              <Participants list={participantList} />
+              </Drawer>
       </div>
 
       /*

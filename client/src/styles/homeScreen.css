@@ -76,7 +76,7 @@
 .card
 {
     width: 30%;
-    height: 40%;
+    height: 50%;
     margin:1%;
     display: flex;
     background-color: #25272a;
@@ -106,8 +106,7 @@
     text-align: start;
     font-size: small;
     font-weight: bold;
-    height: fit-content;
-    width: fit-content;
+    
 }
 .admin-badge > p
 {
@@ -116,6 +115,7 @@
     height: fit-content;
     border:1px solid #dd8c13;
     padding: 5px;
+    background-color: #151417;
 }
 
 .registration-badge
@@ -126,12 +126,12 @@
 
 .card-description
 {
+    height: 100%;
     color: #848589;
     margin-right: 5%;
     margin-left: 5%;
     text-align: center;
     font-weight: lighter;
-    overflow: auto;
 }
 .voting-info-items
 {

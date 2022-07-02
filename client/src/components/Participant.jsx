@@ -3,9 +3,8 @@ import avatar from "../images/PhotoAvatar.jpg"
 export default function Participant({participant,instance,session,myAddr,owner,registered,sessionPhase}) {
   
   // get state of participant and  hange the class params depending on his state
-  const [voteClassParams, setVoteClassParams] = useState("btn btn-warning text-white visible");
-  const [approveClassParams, setApproveClassParams] = useState("btn btn-danger text-white invisible");
-  const [statusClassParams, setStatusClassParams] = useState("text-primary text-white invisible");
+  const [voteClassParams, setVoteClassParams] = useState("vote-btn");
+  const [approveClassParams, setApproveClassParams] = useState("invisible");
   const [voted, setVoted] = useState(false);
   useEffect(()=>
   {
@@ -21,7 +20,7 @@ useEffect(()=>
   {
     switch (voted) {
       case true:
-          setVoteClassParams("btn btn-warning text-white invisible");
+          setVoteClassParams("invisible");
         break;
       default:
         break;
@@ -32,7 +31,7 @@ useEffect(()=>
 {
     switch (sessionPhase) {
       case "Locked":
-          setVoteClassParams("btn btn-warning text-white invisible");
+          setVoteClassParams("invisible");
         break;
     
       default:
@@ -45,10 +44,18 @@ useEffect(()=>
 {
   if (owner)
   {
-    setStatusClassParams("text-primary text-white invisible")
     if(participant.status !== "approved")
     {
-        setApproveClassParams("btn btn-danger ml-2 text-white visible");
+          switch (participant.type)
+          {
+            case "candidate":
+              setApproveClassParams("approve-candidate-btn")
+            break;
+            case "voter":
+              setApproveClassParams("approve-voter-btn")
+            break;  
+          }
+        //setVoteClassParams("invisible");
     }
   }
 });
@@ -64,9 +71,11 @@ const approve= async()=>
     switch (participant.type) {
       case "voter":
           await instance.methods.approveVoter(session.id,participant.id).send({from:myAddr});
+          setVoteClassParams("vote-btn")
         break;
       case "candidate":
           await instance.methods.approveCandidate(session.id,participant.id).send({from:myAddr});
+          setVoteClassParams("vote-btn")
       default:
         break;
     }  
@@ -74,16 +83,21 @@ const approve= async()=>
 
   return (
 
-<div class="card col" style={{height:"400px"}}>
-  <img class="card-img-top" src={""} alt="Card image"/>
-  <div class="card-body">
-    <h4 class="card-title">{participant.name}</h4>
-    <p class="card-text">
+<div class="participant-card">
+  <div class="card-heading">
+    <img src={participant.imgURI} placeholder={avatar} alt="Card image"/>
+  </div>
+  <div class="participant-card-body">
+    <div class="participant-title">
+      <h4>{participant.name}</h4>
+    </div>
+    <p class="participant-description">
         {participant.info}
     </p>
-    <p href="#" class={statusClassParams}>Status {participant.status}</p>
+    <div class="participant-voting-btns">
     <button href="#" class={voteClassParams} onClick={vote}>Vote</button>
     <button href="#" class={approveClassParams} onClick={approve}>Approve {participant.type}</button>
+    </div>
   </div>
 </div>
   )
