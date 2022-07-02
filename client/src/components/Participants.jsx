@@ -44,40 +44,26 @@ function checkAndAdd(user)
         }
 }
 
-
+// should execute only once but since the events dont work i had to 
+//reexcute it and get all the vents from the first vlock
 useEffect(()=>
 {
-
-  if(parseInt(myAddr) ===parseInt(session.owner))
-  {
-    //remove voter from the list of participants if he exists and update candidate status to approved if he exists
-    instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(evt=>
+    instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
     {
     if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
     {
-      let index;
-      let found = participants.some((p,i)=>{
-        index = i;
-        return  (parseInt(p.id) === parseInt(evt.returnValues.voter))
-        })
-      if(found === true)
-      {
-        console.log("should remove element from list with index",index);
-      }
+      let voter = await instance.methods.participants(evt.returnValues.voter).call();
+        voter.approved= true;
+        checkAndAdd(voter);
     }}));  
     instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
     {
     if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
     {
       let candidate = await instance.methods.participants(evt.returnValues.candidate).call();
-      const found = participants.some(p=> parseInt(p.id) === parseInt(candidate.id));
-      if(found===false)
-      {
-        setParticipants(prev=> [...prev,candidate]);      
-      }
+        candidate.approved= true;
+        checkAndAdd(candidate);
     }}));
-    
-    
     instance.events.joinSessionVoterRequest({fromBlock:0,filter:{sessionID:parseInt(session.id)}}).on("data",(async (evt)=>
     {
       //workAround since filter does not work properly
@@ -97,7 +83,6 @@ useEffect(()=>
       }
     }
     }));
-  
     instance.events.joinSessionCandidateRequest({fromBlock:0,filter:{sessionID:session.id}}).on("data",async (evt)=>
     {
     if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID)){
@@ -111,19 +96,7 @@ useEffect(()=>
               checkAndAdd(participant);
               break;
     }}});
-  
-  }else
-  {
-    instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
-    {
-    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
-    {
-        let candidate = await instance.methods.participants(evt.returnValues.candidate).call();
-        candidate.approved= true;
-        checkAndAdd(candidate)
-    }}));
-  }
-},[myAddr]);
+  },[myAddr]);
 
 
   return (
