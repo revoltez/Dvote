@@ -44,7 +44,7 @@ useEffect(()=>
 {
   if (owner)
   {
-    if(participant.status !== "approved")
+    if(participant.approved !== true)
     {
           switch (participant.type)
           {
