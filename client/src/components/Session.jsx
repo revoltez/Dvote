@@ -1,8 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
-import Participant from './Participant';
 import "../styles/session.css";
 import { Drawer } from '@mantine/core';
-import {Badge} from "@mantine/core" 
 import Participants from './Participants';
 export default function Session({session,myAddr,instance}) {
 
@@ -19,19 +17,17 @@ const [registered, setRegistered] = useState(null);
 const [requested, setRequested] = useState(null);
 const [owner, setOwner] = useState(false);
 // only approved voter and approved candidates
-const [participants, setParticipants] = useState([]);
 const [adminClassParams, setAdminClassParams] = useState("invisible");
 const [sessionPhaseClassParams, setsessionPhaseClassParams] = useState("");
 const [joinVoterClassParams, setJoinVoterClassParams] = useState("");
 const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("");
 const [winnerClassParams, setWinnerClassParams] = useState("list-group-item invisible");
-const [participantList, setParticipantList] = useState([]);
 const [reset, setReset] = useState(false);
 const [openedDrawer, setOpenedDrawer] = useState(false);
 // this could be modified depending ton how you treat cases of equality
 const countWinner = async ()=>
 {
-  let winningCandidate = {name:"",count:0};
+  /*let winningCandidate = {name:"",count:0};
   participants.forEach(async (p)=>{
   {
     let count = await instance.methods.getVoteCount(session.id,p.id).call();
@@ -42,15 +38,10 @@ const countWinner = async ()=>
   }
   setWinner(winningCandidate.name);
   setWinnerClassParams("list-group-item visible");
-})
+})*/
 }
 
 
-useEffect(()=>
-{
-  let list = participants.map((elem,index)=> <Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} key={index} participant={elem}/>); 
-  setParticipantList(list);
-},[participants])
 
 useEffect(()=>
 {
@@ -104,7 +95,6 @@ useEffect(()=>
     setRequested(result);
   }
   requestStatus();
-
 },[myAddr])
 
 
@@ -127,84 +117,12 @@ const verifyOwnership= ()=>
 
 useEffect(()=>
 {
-
   if(verifyOwnership())
   {
     setOwner(true);
     setRequested(true);
-    //remove voter from the list of participants if he exists and update candidate status to approved if he exists
-    instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(evt=>
-    {
-    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
-    {
-      let index;
-      let found = participants.some((p,i)=>{
-        index = i;
-        return  (parseInt(p.id) === parseInt(evt.returnValues.voter))
-        })
-      if(found === true)
-      {
-        console.log("should remove element from list with index",index);
-      }
-    }}));  
-    instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
-    {
-    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
-    {
-      let candidate = await instance.methods.participants(evt.returnValues.candidate).call();
-      const found = participants.some(p=> parseInt(p.id) === parseInt(candidate.id));
-      if(found===false)
-      {
-        candidate.status= "approved";
-        setParticipants(prev=> [...prev,candidate]);      
-      }
-    }}));
-    
-    
-    instance.events.joinSessionVoterRequest({fromBlock:0,filter:{sessionID:parseInt(session.id)}}).on("data",(async (evt)=>
-    {
-      //workAround since filter does not work properly
-    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
-    {
-
-          let voterAddr = evt.returnValues.user;
-          let result = await checkRegisteredStatus(voterAddr);
-          switch (result.status) {
-            // means that the user has not yet beein approved by session Admin
-            case (false):
-              let participant = await instance.methods.participants(voterAddr).call();
-              participant.type= "voter";
-              participant.status= "not Approved";
-              setParticipants(prev => [...prev,participant]);
-              break;
-      }
-    }
-    }));
-  
-    instance.events.joinSessionCandidateRequest({fromBlock:0,filter:{sessionID:session.id}}).on("data",async (evt)=>
-    {
-    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID)){
-          let candidateAddr = evt.returnValues.user;
-          let result = await checkRegisteredStatus(candidateAddr);
-          switch (result.status) {
-            case (false):
-              let participant = await instance.methods.participants(candidateAddr).call();
-              participant.type="candidate";
-              setParticipants(prev => [...prev,participant]);
-              break;
-    }}});
-  
-  }else
-  {
-    instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
-    {
-    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
-    {
-      let candidate = await instance.methods.participants(evt.returnValues.candidate).call();
-      setParticipants(prev=> [...prev,candidate]);      
-    }}));
-    
-    instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id,voter:myAddr}}).on("data",async (evt)=>
+  }
+  instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id,voter:myAddr}}).on("data",async (evt)=>
     {
       let result = await checkRegisteredStatus(myAddr);
       if (evt.returnValues.voter === myAddr)
@@ -212,8 +130,6 @@ useEffect(()=>
           setRegistered(result.status);
       }
     });
-
-  }
     //get current unix epoch time and compare it with deadline and set handler
     let currentUnixTime = Math.floor((Date.now()/1000));
     if (parseInt(session.votingDeadline) > parseInt(currentUnixTime))
@@ -295,7 +211,7 @@ const showParticipants = async ()=>
               transitionTimingFunction="ease"
               size="80%"
             >
-              <Participants list={participantList} />
+              <Participants instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} checkRegisteredStatus={checkRegisteredStatus} />
               </Drawer>
       </div>
 
