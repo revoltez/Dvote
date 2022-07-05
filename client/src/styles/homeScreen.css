@@ -101,7 +101,7 @@
 }
 .admin-badge
 {
-    
+        
     color: #a9a9ad;
     font-size: small;
     font-weight: bold;
@@ -114,7 +114,7 @@
     height: fit-content;
     border:1px solid #dd8c13;
     padding: 5px;
-    background-color: #151417;
+    background-color: #1a1b1e;
 }
 
 .registration-badge
@@ -125,6 +125,7 @@
 
 .card-description
 {
+    flex: 1;
     height: 100%;
     color: #848589;
     margin-right: 5%;
@@ -135,29 +136,34 @@
 .voting-info-items
 {
     display: flex;
-    margin:5px
+    flex: 1;
+    align-items: center;
+    margin:5px;
 }
 .btn-form-voter
 {
+    flex: 1;
     color:#15abbe;
     border: 1px solid #15abbe;
     padding: 5px;
     background-color: #1a1b1e;
-    width: auto;
-    font-size: smaller;
+    width: fit-content;
+    font-size: small;
     font-weight: bold;
     margin:2%
 }
 .btn-form-candidate
 {
+    flex: 1;
     border: 1px solid #dd3445;
     padding: 5px;
     background-color: #1a1b1e;
     width: fit-content;
+    height: fit-content;
     color: #dd3445;
-    font-size: smaller;
+    font-size:small;
     font-weight: bold;
-    margin:2%
+    
 }
 .btn-form-candidate:hover
 {
@@ -176,7 +182,7 @@
     background-color: #1a1b1e;
     width: fit-content;
     color: #40c156;
-    font-size: smaller;
+    font-size: small;
     font-weight: bold;
     width: fit-content;
     height: fit-content;

@@ -17,6 +17,7 @@ contract Dvote {
         uint8 maxVotersSize;
         uint8 maxCandidateSize;
         mapping(address => bool) requested; // represents who requested to register for dvote session
+        mapping(address => bool) voted;
         mapping(address => bool) voters; // bool referr to whether voter is approved by admin to vote or not
         mapping(address => bool) candidates; // bool referr to whether candidate is approved by admin to vote or not
         mapping(address => uint16) votes;
@@ -188,7 +189,6 @@ contract Dvote {
             "candidate already approved"
         );
         sessions[sessionID].candidates[candidate] = true;
-        sessions[sessionID].voters[candidate] = true;
         emit candidateApproved(sessionID, candidate);
     }
 
@@ -204,8 +204,13 @@ contract Dvote {
         );
         require(
             sessions[sessionID].voters[msg.sender] == true,
-            "voter is not approved by admin to participate in this session"
+            "Not approved by admin to vote in this session"
         );
+        require(
+            sessions[sessionID].voted[msg.sender] == false,
+            "cant vote more then once"
+        );
+        sessions[sessionID].voted[msg.sender] = true;
         sessions[sessionID].votes[candidate] += 1;
     }
 

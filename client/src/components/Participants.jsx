@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState,useEffect } from 'react'
 import "../styles/participantList.css"
 import Participant from './Participant';
@@ -7,7 +7,6 @@ export default function Participants({instance,registered,owner,myAddr,session,s
 
 const [participantList, setParticipantList] = useState([]);
 const [participants, setParticipants] = useState([]);
-
 useEffect(()=>
 {
   let list = participants.filter((elem,index)=>
@@ -16,31 +15,55 @@ useEffect(()=>
     {
       if(elem.approved===true)
       {
-        return true;
+        if (elem.type === "candidate")
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
       else
       {
-        console.log("element not approved yet");
         return false;
       }
     }else
     {
-        console.log("owner!!");
-        return true;
+        if((elem.type ==="voter") && (elem.approved === true)){
+          console.log("candidate::",elem);
+          return false;
+        }else
+        {
+            return true;
+        }        
     }
-  }).map((elem,index)=> <Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} key={index} participant={elem}/>); 
+  })
+  .map((elem,index)=> <Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} key={index} participant={elem}/>); 
 
   setParticipantList(list);
 
 },[participants,myAddr])
 
-
-function checkAndAdd(user)
+const refParticipants =useRef(participants);
+// function is async because React batches setStates together so event listeners will call setStates from
+// multiple sources and therefore making the condition not pass which is finding an empty participants
+const checkAndAdd = function checkAndAdd(user)
 {
-        const found = participants.some(p=> parseInt(p.id) === parseInt(user.id));
+
+        const found = refParticipants.current.some(p=>
+          {
+            return(parseInt(p.id) === parseInt(user.id))
+          });
+        
         if(found===false)
         {
-          setParticipants(prev=> [...prev,user]);      
+        console.log("participant from inside checkAndAdd",refParticipants.current);
+        refParticipants.current = [...refParticipants.current,user]    
+        setParticipants(prev=> [...prev,user]);      
+        }else
+        {
+          console.log("already added");
         }
 }
 
@@ -48,22 +71,25 @@ function checkAndAdd(user)
 //reexcute it and get all the vents from the first vlock
 useEffect(()=>
 {
-    instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
-    {
-    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
-    {
-      let voter = await instance.methods.participants(evt.returnValues.voter).call();
-        voter.approved= true;
-        checkAndAdd(voter);
-    }}));  
     instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
     {
     if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
     {
       let candidate = await instance.methods.participants(evt.returnValues.candidate).call();
+        candidate.type="candidate"; 
         candidate.approved= true;
         checkAndAdd(candidate);
     }}));
+    
+    instance.events.voterApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
+    {
+    if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID))
+    {
+      let voter = await instance.methods.participants(evt.returnValues.voter).call();
+        voter.type="voter";
+        voter.approved= true;
+        checkAndAdd(voter);
+    }}));  
     instance.events.joinSessionVoterRequest({fromBlock:0,filter:{sessionID:parseInt(session.id)}}).on("data",(async (evt)=>
     {
       //workAround since filter does not work properly
@@ -86,6 +112,7 @@ useEffect(()=>
     instance.events.joinSessionCandidateRequest({fromBlock:0,filter:{sessionID:session.id}}).on("data",async (evt)=>
     {
     if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID)){
+          console.log("request got called");
           let candidateAddr = evt.returnValues.user;
           let result = await checkRegisteredStatus(candidateAddr);
           switch (result.status) {
@@ -96,7 +123,7 @@ useEffect(()=>
               checkAndAdd(participant);
               break;
     }}});
-  },[myAddr]);
+  },[]);
 
 
   return (

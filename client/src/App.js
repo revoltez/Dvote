@@ -19,7 +19,7 @@ function App() {
         const instance = new web3.eth.Contract(
           DvoteContract.abi,
           web3.utils.toChecksumAddress(
-            "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+            "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690"
           )
         );
 

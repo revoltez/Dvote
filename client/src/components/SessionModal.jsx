@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Modal,useMantineTheme } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 export default function SessionModal({instance,myAddr}) {
   
 const [open, setOpen] = useState(false);
@@ -14,6 +15,12 @@ const createSession = async (event)=>
         event.target.maxVotersSize.value,
         event.target.maxCandidateSize.value,
     ).send({from:myAddr});
+    setOpen(false);
+    showNotification(
+      {
+        title:"Dvote",
+        message:"Session Request created Successfully"
+      })
 }
 
 return (

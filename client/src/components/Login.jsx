@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import { Button } from '@mantine/core';
 import "../styles/login.css";
 import voting_box from "../images/voting_box.png";
@@ -10,22 +10,30 @@ const [opened, setOpened] = useState(false);
 const register = async (event)=>
 {
   event.preventDefault(); 
-  setUserName(event.target.username.value);
-  setInfo(event.target.info.value);
-  setUri(event.target.uri.value);
-    
   await instance.methods.register(event.target.uri.value,event.target.info.value,event.target.username.value).send({from:myAddr});
 //listen to participant registered event and pass its value  so that homscreen will rerender instead of reloading
-  instance.events.participantRegistered({fromBlock:0,filter:{user:myAddr}},(err,evt)=>
-  {
-    setRegistered(true)
-  });
 }
-setHomeOpened(false);
-setTimeout(()=>
+
+
+useEffect(()=>
 {
+  instance.events.participantRegistered({fromBlock:0,filter:{user:parseInt(myAddr)}},(err,evt)=>
+  {
+    if(parseInt(evt.returnValues.user)===parseInt(myAddr))
+    {
+      let fetchInfo = async()=>
+      {
+        let participant= await instance.methods.participants(myAddr).call();
+         setUserName(participant.name);
+         setInfo(participant.info);
+         setUri(participant.imgURI);
+      }
+      fetchInfo();
+    }
+  });
   setOpened(true)
-},200)
+},[])
+
 
 return (
 <Transition mounted={opened} transition="scale-x" duration={400} timingFunction="ease">

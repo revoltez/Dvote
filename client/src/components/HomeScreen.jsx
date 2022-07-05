@@ -15,39 +15,40 @@ const [info, setInfo] = useState(null);
 const [uri, setUri] = useState(null);
 const [homeOpened, setHomeOpened] = useState(false);
 
-const [registered, setRegistered] = useState(false);
+const [registered, setRegistered] = useState(true);
 useEffect(() => {
-    const init= async()=>
-    {
-      let participant= await instance.methods.participants(myAddr).call();
-      if (participant.registered=== true){
-         setRegistered(true)
+      let fetchInfo = async()=>
+      {
+        let participant= await instance.methods.participants(myAddr).call();
          setUserName(participant.name);
          setInfo(participant.info);
          setUri(participant.imgURI);
-         showNotification({
-            title: 'DVote',
-            message: 'welcom '+participant.name+' 🤥'
-          }) 
-        }else 
-        {
-          setRegistered(false);
-        }
-    }
-    init();
+      }
+      fetchInfo();
 }, [myAddr]);
 
-setTimeout(()=>
+useEffect(()=>
 {
-  setHomeOpened(true);
-},400)
-
-  if (registered === false)
+  setTimeout(()=>
   {
-    return(<Login instance ={instance} username={username} info={info} uri={uri} onChange={[setInfo,setUserName,setUri,setHomeOpened]} myAddr={myAddr} setRegistered={setRegistered}/>)
-  }
-  return (
+    if(username)
+    {
+        setHomeOpened(true);
+        showNotification({title:"Dvote",message:"welcome "+username});
+        setRegistered(true);
+    }
+    else
+    {
+      setHomeOpened(false);
+      setRegistered(false);
+    }
+  },300)
+},[username])
 
+
+  if (registered === true)
+  {
+    return(
 <Transition mounted={homeOpened} transition="pop-top-left" duration={400} timingFunction="ease">
       {(styles) =>
     <div style={styles}>
@@ -66,6 +67,9 @@ setTimeout(()=>
       </div>
     </div>
     </div>
-}</Transition>  
+}</Transition>  )
+  }
+  return (
+    <Login instance ={instance} username={username} info={info} uri={uri} onChange={[setInfo,setUserName,setUri,setHomeOpened]} myAddr={myAddr} setRegistered={setRegistered}/>
   )
 }

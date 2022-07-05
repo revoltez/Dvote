@@ -3,7 +3,7 @@ import avatar from "../images/PhotoAvatar.jpg"
 export default function Participant({participant,instance,session,myAddr,owner,registered,sessionPhase}) {
   
   // get state of participant and  hange the class params depending on his state
-  const [voteClassParams, setVoteClassParams] = useState("vote-btn");
+  const [voteClassParams, setVoteClassParams] = useState("invisible");
   const [approveClassParams, setApproveClassParams] = useState("invisible");
   const [voted, setVoted] = useState(false);
   useEffect(()=>
@@ -16,16 +16,6 @@ export default function Participant({participant,instance,session,myAddr,owner,r
     }
   },[registered])
 
-useEffect(()=>
-  {
-    switch (voted) {
-      case true:
-          setVoteClassParams("invisible");
-        break;
-      default:
-        break;
-    }
-  },[voted])
 
 useEffect(()=>
 {
@@ -50,19 +40,43 @@ useEffect(()=>
           {
             case "candidate":
               setApproveClassParams("approve-candidate-btn")
-            break;
+              setVoteClassParams("invisible")
+              break;
             case "voter":
               setApproveClassParams("approve-voter-btn")
+              setVoteClassParams("invisible");
             break;  
           }
         //setVoteClassParams("invisible");
+    }else
+    {
+      switch (participant.type) {
+        case "candidate":
+          setApproveClassParams('invisible');  
+            if(voted===false) {setVoteClassParams("vote-btn");}
+          break;
+        case "voter":
+          console.log("shouldn't be reached since voter and approved");
+          setApproveClassParams('invisible');  
+          setVoteClassParams("invisible");
+        break;
+      }
     }
+  }else
+  {
+      switch (participant.type) {
+        case "candidate":
+            setApproveClassParams('invisible');  
+            if (voted === false) {setVoteClassParams("vote-btn");}
+          break;
   }
-});
+}
+},[voted,myAddr]);
 
 const vote = async()=>
 {
   await instance.methods.vote(session.id,participant.id).send({from:myAddr});
+  setVoteClassParams("invisible");
   setVoted(true);
 }
 
@@ -72,11 +86,13 @@ const approve= async()=>
       case "voter":
           await instance.methods.approveVoter(session.id,participant.id).send({from:myAddr});
           setVoteClassParams("vote-btn")
-        break;
+          setApproveClassParams("invisible");
+          break;
       case "candidate":
           await instance.methods.approveCandidate(session.id,participant.id).send({from:myAddr});
           setVoteClassParams("vote-btn")
-      default:
+          setApproveClassParams("invisible");
+          default:
         break;
     }  
 }

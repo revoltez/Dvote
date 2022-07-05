@@ -2,6 +2,7 @@ import React, { Component, useEffect, useState } from 'react';
 import "../styles/session.css";
 import { Drawer } from '@mantine/core';
 import Participants from './Participants';
+import { showNotification } from '@mantine/notifications';
 export default function Session({session,myAddr,instance}) {
 
 // checks whether user has been approved by admin or not  
@@ -167,12 +168,25 @@ useEffect(()=>
 const joinSessionAsCandidate = async()=>
 {
     await instance.methods.registerCandidate(session.id).send({from:myAddr});
+    showNotification(
+      {
+        title:"Dvote",
+        message:"Join as Candidate Request sent succefully",
+        color:"green"
+      })
     setRequested(true);
 }
 
 const joinSessionAsVoter = async ()=>
 {
   await instance.methods.registerVoter(session.id).send({from:myAddr});
+  showNotification(
+      {
+        title:"Dvote",
+        message:"Join as voter Request sent succefully",
+        color:"green",
+      })
+    setRequested(true);
   setRequested(true);
 }
 
@@ -204,7 +218,7 @@ const showParticipants = async ()=>
           <Drawer
               opened={openedDrawer}
               onClose={() => setOpenedDrawer(false)}
-              title="Participants"
+              title=""
               position ="bottom"
               transition="rotate-left"
               transitionDuration={200}
