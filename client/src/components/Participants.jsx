@@ -31,7 +31,6 @@ useEffect(()=>
     }else
     {
         if((elem.type ==="voter") && (elem.approved === true)){
-          console.log("candidate::",elem);
           return false;
         }else
         {
@@ -58,12 +57,23 @@ const checkAndAdd = function checkAndAdd(user)
         
         if(found===false)
         {
-        console.log("participant from inside checkAndAdd",refParticipants.current);
         refParticipants.current = [...refParticipants.current,user]    
         setParticipants(prev=> [...prev,user]);      
         }else
         {
-          console.log("already added");
+          let index = refParticipants.current.findIndex((p)=> p.id === user.id);
+          if (user.approved === true && refParticipants.current.at(index).approved === false)
+          {
+              let newList = refParticipants.current.map((p)=>
+              {
+                if( p.id === user.id){                  
+                  return {...p,approved:true};
+                }
+                return p;
+              });
+              refParticipants.current = newList;
+              setParticipants(newList);
+          }
         }
 }
 
@@ -112,7 +122,6 @@ useEffect(()=>
     instance.events.joinSessionCandidateRequest({fromBlock:0,filter:{sessionID:session.id}}).on("data",async (evt)=>
     {
     if (parseInt(session.id) ===parseInt(evt.returnValues.sessionID)){
-          console.log("request got called");
           let candidateAddr = evt.returnValues.user;
           let result = await checkRegisteredStatus(candidateAddr);
           switch (result.status) {

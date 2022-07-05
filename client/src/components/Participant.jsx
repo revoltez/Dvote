@@ -6,16 +6,18 @@ export default function Participant({participant,instance,session,myAddr,owner,r
   const [voteClassParams, setVoteClassParams] = useState("invisible");
   const [approveClassParams, setApproveClassParams] = useState("invisible");
   const [voted, setVoted] = useState(false);
+  
+  console.log("p info",participant);
+  
   useEffect(()=>
   {
-    switch (registered)
+    const checkVoted = async ()=>
     {
-      case true:
-        console.log("got approved to participate in session");
-      break;
+      let result = await instance.methods.voted(session.id,myAddr).call();
+      setVoted(result);
     }
-  },[registered])
-
+    checkVoted();
+  },[])
 
 useEffect(()=>
 {
@@ -29,25 +31,23 @@ useEffect(()=>
     }
 },[sessionPhase])
 
-
 useEffect(()=>
 {
-  if (owner)
+  if (parseInt(session.owner) ===parseInt( myAddr) )
   {
+    console.log("session owned");
     if(participant.approved !== true)
     {
           switch (participant.type)
           {
             case "candidate":
               setApproveClassParams("approve-candidate-btn")
-              setVoteClassParams("invisible")
               break;
             case "voter":
               setApproveClassParams("approve-voter-btn")
-              setVoteClassParams("invisible");
             break;  
           }
-        //setVoteClassParams("invisible");
+        setVoteClassParams("invisible");
     }else
     {
       switch (participant.type) {

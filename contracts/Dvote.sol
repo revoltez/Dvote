@@ -214,6 +214,14 @@ contract Dvote {
         sessions[sessionID].votes[candidate] += 1;
     }
 
+    function voted(uint8 sessionID, address user)
+        external
+        view
+        returns (bool result)
+    {
+        return sessions[sessionID].voted[user];
+    }
+
     function getVoteCount(uint8 sessionID, address candidate)
         public
         view
