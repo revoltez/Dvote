@@ -21,7 +21,6 @@ const [sessionPhaseClassParams, setsessionPhaseClassParams] = useState("");
 const [joinVoterClassParams, setJoinVoterClassParams] = useState("");
 const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("");
 const [openedDrawer, setOpenedDrawer] = useState(false);
-const [countWinner, setCountWinner] = useState(false);
 
 /*const countWinner = async ()=>
 {
@@ -74,7 +73,6 @@ useEffect(()=>
       setJoinVoterClassParams("invisible");
       setjoinCandidateClassParams("invisible");
       setsessionPhaseClassParams("locked");
-      setCountWinner(true);
     break;  
   }
 },[sessionPhase,requested])

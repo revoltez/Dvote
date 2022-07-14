@@ -10,6 +10,23 @@ const [participants, setParticipants] = useState([]);
 const refParticipants =useRef(participants);
 
 
+const countWinner = async ()=>
+{
+  
+  let winningCandidate = {name:"",count:0};
+  participants.forEach(async (p)=>{
+  {
+    let count = await instance.methods.getVoteCount(session.id,p.id).call();
+    if (winningCandidate.count <= count)
+    {
+      winningCandidate.name = p.name;
+    } 
+  }
+})
+  console.log("wining Candidate",winningCandidate);
+}
+
+
 useEffect(()=>
 {
   let list = participants.filter((elem,index)=>
@@ -128,6 +145,14 @@ useEffect(()=>
               checkAndAdd(participant);
               break;
     }}});
+
+    switch(sessionPhase)
+    {
+      case "Locked":
+        countWinner();
+      break;
+    }
+
   },[]);
 
 

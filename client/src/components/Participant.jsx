@@ -13,7 +13,6 @@ export default function Participant({participant,instance,session,myAddr,owner,r
     const checkVoted = async ()=>
     {
       let result = await instance.methods.voted(session.id,myAddr).call();
-      console.log("voted:::",result);
       setVoted(result);
     }
     checkVoted();
@@ -36,7 +35,6 @@ useEffect(()=>
 {
   if (parseInt(session.owner) ===parseInt( myAddr) )
   {
-    console.log("session owned");
     if(participant.approved !== true)
     {
           switch (participant.type)
@@ -72,7 +70,7 @@ useEffect(()=>
       switch (participant.type) {
         case "candidate":
             setApproveClassParams('invisible');  
-            if (voted === false) {setVoteClassParams("vote-btn");}
+            if (voted === false) {setVoteClassParams("vote-btn");}else {setVoteClassParams("invisible")}
           break;
   }
 }
@@ -80,7 +78,7 @@ useEffect(()=>
 
 const vote = async()=>
 {
-  await instance.methods.vote(session.id,participant.id).send({from:myAddr});
+  await instance.methods.vote(session.id,participant.id).send({from:myAddr})
   setVoteClassParams("invisible");
   setVoted(true);
 }
