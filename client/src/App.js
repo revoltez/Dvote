@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from "react";
-import DvoteContract from "./artifacts/contracts/Dvote.sol/Dvote.json";
+import DvoteContract from "./contracts/Dvote.json";
 import getWeb3 from "./getWeb3";
 import HomeScreen from "./components/HomeScreen";
 import "./App.css";
@@ -16,10 +16,11 @@ function App() {
         const web3 = await getWeb3();
         const Accounts = await web3.eth.getAccounts();
         const networkId = await web3.eth.net.getId();
+        const deployedNetwork = DvoteContract.networks[networkId];
         const instance = new web3.eth.Contract(
           DvoteContract.abi,
           web3.utils.toChecksumAddress(
-            "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+            deployedNetwork && deployedNetwork.address
           )
         );
 

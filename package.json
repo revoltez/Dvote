@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx hardhat test",
+    "deploy": "npx hardhat run --network localhost scripts/deploy.js"
   },
   "keywords": [],
   "author": "",
@@ -20,9 +21,7 @@
     "hardhat-deploy": "^0.11.10",
     "web3": "^1.7.3"
   },
-  "scripts":
-  {
-    "test":"npx hardhat test",
-    "deploy":"npx hardhat run --network localhost scripts/deploy.js"
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.0.10"
   }
 }
