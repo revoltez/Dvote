@@ -7,30 +7,27 @@ export default function Participants({instance,registered,owner,myAddr,session,s
 
 const [participantList, setParticipantList] = useState([]);
 const [participants, setParticipants] = useState([]);
+const refParticipants =useRef(participants);
+
+
 useEffect(()=>
 {
   let list = participants.filter((elem,index)=>
   {
     if(parseInt(myAddr) !== parseInt(session.owner))
     {
-      if(elem.approved===true)
-      {
-        if (elem.type === "candidate")
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-      else
+      if(elem.approved===false || elem.type==="voter")
       {
         return false;
       }
+      else
+      {
+        return true;
+      }
     }else
     {
-        if((elem.type ==="voter") && (elem.approved === true)){
+        if((elem.type ==="voter") && (elem.approved === true))
+        {
           return false;
         }else
         {
@@ -44,7 +41,6 @@ useEffect(()=>
 
 },[participants,myAddr])
 
-const refParticipants =useRef(participants);
 // function is async because React batches setStates together so event listeners will call setStates from
 // multiple sources and therefore making the condition not pass which is finding an empty participants
 const checkAndAdd = function checkAndAdd(user)
@@ -136,6 +132,6 @@ useEffect(()=>
 
 
   return (
-    <div class="participant-list-container">{participantList}</div>
+    <div class="participant-list-container">{participantList || <div> List still empty, come back later ☹️ </div>}</div>
   )
 }

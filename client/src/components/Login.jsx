@@ -14,11 +14,11 @@ const register = async (event)=>
 //listen to participant registered event and pass its value  so that homscreen will rerender instead of reloading
 }
 
-
 useEffect(()=>
 {
-  instance.events.participantRegistered({fromBlock:0,filter:{user:parseInt(myAddr)}},(err,evt)=>
+  instance.events.participantRegistered({fromBlock:0,filter:{user:myAddr}},(err,evt)=>
   {
+    console.log("detected events");
     if(parseInt(evt.returnValues.user)===parseInt(myAddr))
     {
       let fetchInfo = async()=>
@@ -31,7 +31,7 @@ useEffect(()=>
       fetchInfo();
     }
   });
-  setOpened(true)
+  setOpened(true);
 },[])
 
 

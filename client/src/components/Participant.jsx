@@ -7,22 +7,23 @@ export default function Participant({participant,instance,session,myAddr,owner,r
   const [approveClassParams, setApproveClassParams] = useState("invisible");
   const [voted, setVoted] = useState(false);
   
-  console.log("p info",participant);
   
   useEffect(()=>
   {
     const checkVoted = async ()=>
     {
       let result = await instance.methods.voted(session.id,myAddr).call();
+      console.log("voted:::",result);
       setVoted(result);
     }
     checkVoted();
-  },[])
+  },[myAddr])
 
 useEffect(()=>
 {
     switch (sessionPhase) {
       case "Locked":
+          console.log("should be invisible");
           setVoteClassParams("invisible");
         break;
     
@@ -53,7 +54,11 @@ useEffect(()=>
       switch (participant.type) {
         case "candidate":
           setApproveClassParams('invisible');  
-            if(voted===false) {setVoteClassParams("vote-btn");}
+            if(voted===false && sessionPhase!=="Locked") {setVoteClassParams("vote-btn");}
+            else{
+              console.log("sessionPhase",sessionPhase);
+              console.log("voted",voted);
+              setVoteClassParams("invisible")}
           break;
         case "voter":
           console.log("shouldn't be reached since voter and approved");

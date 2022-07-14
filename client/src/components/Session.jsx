@@ -13,20 +13,17 @@ async function checkRegisteredStatus(addr)
 }
 
 const [sessionPhase, setSessionPhase] = useState("")
-const [winner, setWinner] = useState("");
 const [registered, setRegistered] = useState(null);
 const [requested, setRequested] = useState(null);
 const [owner, setOwner] = useState(false);
-// only approved voter and approved candidates
 const [adminClassParams, setAdminClassParams] = useState("invisible");
 const [sessionPhaseClassParams, setsessionPhaseClassParams] = useState("");
 const [joinVoterClassParams, setJoinVoterClassParams] = useState("");
 const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("");
-const [winnerClassParams, setWinnerClassParams] = useState("list-group-item invisible");
-const [reset, setReset] = useState(false);
 const [openedDrawer, setOpenedDrawer] = useState(false);
-// this could be modified depending ton how you treat cases of equality
-const countWinner = async ()=>
+const [countWinner, setCountWinner] = useState(false);
+
+/*const countWinner = async ()=>
 {
   /*let winningCandidate = {name:"",count:0};
   participants.forEach(async (p)=>{
@@ -39,8 +36,8 @@ const countWinner = async ()=>
   }
   setWinner(winningCandidate.name);
   setWinnerClassParams("list-group-item visible");
-})*/
-}
+})
+}*/
 
 
 
@@ -77,7 +74,7 @@ useEffect(()=>
       setJoinVoterClassParams("invisible");
       setjoinCandidateClassParams("invisible");
       setsessionPhaseClassParams("locked");
-      countWinner();
+      setCountWinner(true);
     break;  
   }
 },[sessionPhase,requested])

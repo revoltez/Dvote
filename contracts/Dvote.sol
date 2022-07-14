@@ -189,6 +189,8 @@ contract Dvote {
             "candidate already approved"
         );
         sessions[sessionID].candidates[candidate] = true;
+        sessions[sessionID].votes[candidate] += 1;
+        sessions[sessionID].voted[candidate] = true;
         emit candidateApproved(sessionID, candidate);
     }
 

@@ -13,9 +13,10 @@ export default function HomeScreen({web3,myAddr,instance}) {
 const [username, setUserName] = useState(null);
 const [info, setInfo] = useState(null);
 const [uri, setUri] = useState(null);
-const [homeOpened, setHomeOpened] = useState(false);
+const [homeOpened, setHomeOpened] = useState(true);
+const [registered, setRegistered] = useState(false);
 
-const [registered, setRegistered] = useState(true);
+
 useEffect(() => {
       let fetchInfo = async()=>
       {
@@ -29,22 +30,32 @@ useEffect(() => {
 
 useEffect(()=>
 {
-  setTimeout(()=>
-  {
     if(username)
     {
         setHomeOpened(true);
         showNotification({title:"Dvote",message:"welcome "+username});
         setRegistered(true);
-    }
+      }
     else
     {
-      setHomeOpened(false);
       setRegistered(false);
     }
-  },300)
 },[username])
 
+
+useEffect(()=>
+{
+  switch (registered) {
+    case true:
+        setHomeOpened(true);      
+      break;
+  
+    default:
+    setHomeOpened(false);
+    break;
+  }
+
+},[registered])
 
   if (registered === true)
   {
