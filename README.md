@@ -1,8 +1,8 @@
+# Dvote
+
 <p align="center">
 <img src="./Logo.png" heigh="400px" width="400px" class="center"></p>
 </p>
-
-# Dvote
 
 - Dvote is a General Decentralized Voting Dapp that is Open, Secure and customizable.
 
