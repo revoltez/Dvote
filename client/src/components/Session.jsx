@@ -22,23 +22,6 @@ const [joinVoterClassParams, setJoinVoterClassParams] = useState("");
 const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("");
 const [openedDrawer, setOpenedDrawer] = useState(false);
 
-/*const countWinner = async ()=>
-{
-  /*let winningCandidate = {name:"",count:0};
-  participants.forEach(async (p)=>{
-  {
-    let count = await instance.methods.getVoteCount(session.id,p.id).call();
-    if (winningCandidate.count <= count)
-    {
-      winningCandidate.name = p.name;
-    } 
-  }
-  setWinner(winningCandidate.name);
-  setWinnerClassParams("list-group-item visible");
-})
-}*/
-
-
 
 useEffect(()=>
 {

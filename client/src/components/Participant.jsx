@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import avatar from "../images/PhotoAvatar.jpg"
+import avatar from "../images/Avatar.jpg"
 export default function Participant({participant,instance,session,myAddr,owner,registered,sessionPhase}) {
   
   // get state of participant and  hange the class params depending on his state
   const [voteClassParams, setVoteClassParams] = useState("invisible");
   const [approveClassParams, setApproveClassParams] = useState("invisible");
   const [voted, setVoted] = useState(false);
-  
+  const [imgSrcParam, setImgSrcParam] = useState(participant.imgURI);
   
   useEffect(()=>
   {
@@ -22,7 +22,6 @@ useEffect(()=>
 {
     switch (sessionPhase) {
       case "Locked":
-          console.log("should be invisible");
           setVoteClassParams("invisible");
         break;
     
@@ -54,12 +53,9 @@ useEffect(()=>
           setApproveClassParams('invisible');  
             if(voted===false && sessionPhase!=="Locked") {setVoteClassParams("vote-btn");}
             else{
-              console.log("sessionPhase",sessionPhase);
-              console.log("voted",voted);
               setVoteClassParams("invisible")}
           break;
         case "voter":
-          console.log("shouldn't be reached since voter and approved");
           setApproveClassParams('invisible');  
           setVoteClassParams("invisible");
         break;
@@ -104,7 +100,11 @@ const approve= async()=>
 
 <div class="participant-card">
   <div class="card-heading">
-    <img src={participant.imgURI} placeholder={avatar} alt="Card image"/>
+    <img src={imgSrcParam} onError={(evt)=>
+      {
+         setImgSrcParam(avatar);
+      }} 
+      />
   </div>
   <div class="participant-card-body">
     <div class="participant-title">
