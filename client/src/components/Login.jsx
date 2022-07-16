@@ -43,7 +43,7 @@ return (
       <div class="description-container">
         <img id="logo" src={logo} alt="Dapp Logo" ></img>
         <p>           
-          Dvote is a General Decentralized Voting Dcentralized Application that is Open, Secure and customizable.
+          Dvote is a General Decentralized voting Application that is Open, Secure and customizable.
           Register once in DVote so that you could be Able to create or participate in open voting Sessions
         </p>
       </div>
