@@ -18,7 +18,6 @@ useEffect(()=>
 {
   instance.events.participantRegistered({fromBlock:0,filter:{user:myAddr}},(err,evt)=>
   {
-    console.log("detected events");
     if(parseInt(evt.returnValues.user)===parseInt(myAddr))
     {
       let fetchInfo = async()=>

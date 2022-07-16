@@ -32,7 +32,6 @@ useEffect(()=>
       break;
     case false:
       {
-        console.log("i got triggered");
         setJoinVoterClassParams("btn-form-voter");
         setjoinCandidateClassParams("btn-form-candidate");
       }
@@ -83,12 +82,10 @@ const verifyOwnership= ()=>
   {
     setOwner(true);
     setRequested(true);
-    console.log("iam admin");
     setAdminClassParams("admin-badge");
     return true;
   }else
   {
-    console.log("not admin");
     setAdminClassParams("invisible")
     return false;
   }

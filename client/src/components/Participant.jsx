@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import avatar from "../images/Avatar.jpg"
-export default function Participant({participant,instance,session,myAddr,owner,registered,sessionPhase}) {
+export default function Participant({participant,instance,session,myAddr,owner,registered,sessionPhase,winner}) {
   
   // get state of participant and  hange the class params depending on his state
   const [voteClassParams, setVoteClassParams] = useState("invisible");
   const [approveClassParams, setApproveClassParams] = useState("invisible");
   const [voted, setVoted] = useState(false);
   const [imgSrcParam, setImgSrcParam] = useState(participant.imgURI);
-  
+  const [winnerClassParam, setWinnerClassParam] = useState("invisible"); 
   useEffect(()=>
   {
+    
     const checkVoted = async ()=>
     {
       let result = await instance.methods.voted(session.id,myAddr).call();
@@ -20,15 +21,25 @@ export default function Participant({participant,instance,session,myAddr,owner,r
 
 useEffect(()=>
 {
+  console.log("winner changed::",winner);
+  console.log("session changed child ",sessionPhase);
+  if(winner !== null){
     switch (sessionPhase) {
       case "Locked":
           setVoteClassParams("invisible");
-        break;
+          switch (winner.id)
+          {
+            case participant.id:
+              setWinnerClassParam("winner");
+            break;
+          }
+          break;
     
       default:
         break;
     }
-},[sessionPhase])
+  }
+},[sessionPhase,winner])
 
 useEffect(()=>
 {
@@ -116,6 +127,8 @@ const approve= async()=>
     <div class="participant-voting-btns">
     <button href="#" class={voteClassParams} onClick={vote}>Vote</button>
     <button href="#" class={approveClassParams} onClick={approve}>Approve {participant.type}</button>
+    <button class={winnerClassParam}>Winner</button>
+
     </div>
   </div>
 </div>

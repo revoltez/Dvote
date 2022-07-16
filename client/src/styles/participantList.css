@@ -104,3 +104,18 @@
     color: white;
     background-color: #dd3445;
 }
+
+.winner
+{
+    color: white;
+    background-color: #40c156;
+    border: 1px solid #40c156; 
+    padding: 10px;
+    margin:3%;
+    font-weight: bold;
+    border: 1px solid #40c156;
+    height: fit-content;
+    width: fit-content;
+}
+
+

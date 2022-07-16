@@ -8,27 +8,35 @@ export default function Participants({instance,registered,owner,myAddr,session,s
 const [participantList, setParticipantList] = useState([]);
 const [participants, setParticipants] = useState([]);
 const refParticipants =useRef(participants);
-
+const [winner, setWinner] = useState(null);
 
 const countWinner = async ()=>
 {
   
-  let winningCandidate = {name:"",count:0};
-  participants.forEach(async (p)=>{
+  let winningCandidate = {id :0,count:0};
+  participants.forEach(async (p,index)=>{
   {
     let count = await instance.methods.getVoteCount(session.id,p.id).call();
     if (winningCandidate.count <= count)
     {
-      winningCandidate.name = p.name;
+      winningCandidate.id = p.id;
+      winningCandidate.count = count;
+      console.log("vote count for "+p.name+" is at "+ count);
+      setWinner(prev => { return {id:winningCandidate.id,count:winningCandidate.count}});
     } 
   }
 })
-  console.log("wining Candidate",winningCandidate);
 }
-
 
 useEffect(()=>
 {
+  console.log("parent changed",winner);
+  console.log("session from partifipants",sessionPhase);
+},[sessionPhase,winner])
+
+useEffect(()=>
+{
+  countWinner();
   let list = participants.filter((elem,index)=>
   {
     if(parseInt(myAddr) !== parseInt(session.owner))
@@ -51,15 +59,13 @@ useEffect(()=>
             return true;
         }        
     }
-  })
-  .map((elem,index)=> <Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} key={index} participant={elem}/>); 
+  });
+  
 
   setParticipantList(list);
 
 },[participants,myAddr])
 
-// function is async because React batches setStates together so event listeners will call setStates from
-// multiple sources and therefore making the condition not pass which is finding an empty participants
 const checkAndAdd = function checkAndAdd(user)
 {
 
@@ -70,8 +76,8 @@ const checkAndAdd = function checkAndAdd(user)
         
         if(found===false)
         {
-        refParticipants.current = [...refParticipants.current,user]    
-        setParticipants(prev=> [...prev,user]);      
+          refParticipants.current = [...refParticipants.current,user]    
+          setParticipants(prev=> [...prev,user]);      
         }else
         {
           let index = refParticipants.current.findIndex((p)=> p.id === user.id);
@@ -90,8 +96,6 @@ const checkAndAdd = function checkAndAdd(user)
         }
 }
 
-// should execute only once but since the events dont work i had to 
-//reexcute it and get all the vents from the first vlock
 useEffect(()=>
 {
     instance.events.candidateApproved({fromBlock:0,filter:{sessionID:session.id}}).on("data",(async evt=>
@@ -146,17 +150,15 @@ useEffect(()=>
               break;
     }}});
 
-    switch(sessionPhase)
-    {
-      case "Locked":
-        countWinner();
-      break;
-    }
-
   },[]);
 
 
   return (
-    <div class="participant-list-container">{participantList || <div> List still empty, come back later ☹️ </div>}</div>
+    <div class="participant-list-container">{
+      participantList.map((elem,index)=> (<Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} 
+      session={session} sessionPhase={sessionPhase} key={index} participant={elem} winner={winner}/>)) 
+      }
+
+    </div>
   )
 }
