@@ -51,7 +51,9 @@ useEffect(()=>
         break;
   
     case false:
-    setLoginOpened(true);  
+    setTimeout(()=>{
+      setLoginOpened(true);  
+    },200)
     setHomeOpened(false);
     break;
   }
