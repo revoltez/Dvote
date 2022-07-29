@@ -4,9 +4,8 @@ import "../styles/login.css";
 import voting_box from "../images/voting_box.png";
 import logo from "../images/logo.png"
 import { Transition } from '@mantine/core';
-export default function Login({instance,username,info,uri,onChange,myAddr,setRegistered}) {
-const [setInfo,setUserName,setUri,setHomeOpened] = onChange;
-const [opened, setOpened] = useState(false);
+export default function Login({instance,onChange,myAddr,loginOpened}) {
+const [setInfo,setUserName,setUri] = onChange;
 const register = async (event)=>
 {
   event.preventDefault(); 
@@ -30,12 +29,11 @@ useEffect(()=>
       fetchInfo();
     }
   });
-  setOpened(true);
 },[])
 
 
 return (
-<Transition mounted={opened} transition="scale-x" duration={400} timingFunction="ease">
+<Transition mounted={loginOpened} transition="scale-x" duration={800} timingFunction="ease">
       {(styles) =>
   <div style={styles}> 
   <div class="body">

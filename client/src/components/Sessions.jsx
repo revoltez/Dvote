@@ -3,7 +3,6 @@ import Session from './Session';
 export default function Sessions({instance,myAddr}) {
 
 const [sessions, setSessions] = useState([]);
-let sessionList = sessions.map((elem,index) => <Session key={index} myAddr={myAddr} instance={instance} session={elem}/>);
 
 useEffect(()=>
 {
@@ -23,6 +22,7 @@ const handleSessionCreatd =async (event)=>
     setSessions(prev=> [...prev,sessionReceipt]);
 }
 
+let sessionList = sessions.map((elem,index) => <Session key={index} myAddr={myAddr} instance={instance} session={elem}/>);
 return (
   
   <div class="session-list-container">

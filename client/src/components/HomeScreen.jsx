@@ -13,9 +13,9 @@ export default function HomeScreen({web3,myAddr,instance}) {
 const [username, setUserName] = useState(null);
 const [info, setInfo] = useState(null);
 const [uri, setUri] = useState(null);
-const [homeOpened, setHomeOpened] = useState(true);
+const [homeOpened, setHomeOpened] = useState(false);
 const [registered, setRegistered] = useState(false);
-
+const [loginOpened, setLoginOpened] = useState(false);
 
 useEffect(() => {
       let fetchInfo = async()=>
@@ -32,7 +32,6 @@ useEffect(()=>
 {
     if(username)
     {
-        setHomeOpened(true);
         showNotification({title:"Dvote",message:"welcome "+username});
         setRegistered(true);
       }
@@ -48,9 +47,11 @@ useEffect(()=>
   switch (registered) {
     case true:
         setHomeOpened(true);      
-      break;
+        setLoginOpened(false);
+        break;
   
-    default:
+    case false:
+    setLoginOpened(true);  
     setHomeOpened(false);
     break;
   }
@@ -60,14 +61,14 @@ useEffect(()=>
   if (registered === true)
   {
     return(
-<Transition mounted={homeOpened} transition="pop-top-left" duration={400} timingFunction="ease">
+<Transition mounted={homeOpened} transition="pop-top-left" duration={1000} timingFunction="ease">
       {(styles) =>
     <div style={styles}>
     <div class="home-body">
       <div class="home-header">
         <div class="logo-container">
           <img id="home-logo" src={logo}></img>
-          <input id="search" placeholder="Search Sessions by Owner ID"></input>
+          {/*<input id="search" placeholder="Search Sessions by Owner ID"></input>*/}
         </div>
         <div class="parameters">
           <SessionModal instance={instance} myAddr={myAddr}></SessionModal> 
@@ -79,8 +80,8 @@ useEffect(()=>
     </div>
     </div>
 }</Transition>  )
-  }
+  }else{
   return (
-    <Login instance ={instance} username={username} info={info} uri={uri} onChange={[setInfo,setUserName,setUri,setHomeOpened]} myAddr={myAddr} setRegistered={setRegistered}/>
-  )
+    <Login instance ={instance} onChange={[setInfo,setUserName,setUri,setHomeOpened]} myAddr={myAddr} loginOpened={loginOpened}/>
+  )}
 }
