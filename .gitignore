@@ -3,4 +3,4 @@ client/src/artifacts
 client/node_modules
 client/src/contracts
 cache
-
+client/yarn-error.log
