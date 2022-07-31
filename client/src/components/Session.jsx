@@ -21,7 +21,7 @@ const [sessionPhaseClassParams, setsessionPhaseClassParams] = useState("");
 const [joinVoterClassParams, setJoinVoterClassParams] = useState("");
 const [joinCandidateClassParams, setjoinCandidateClassParams] = useState("");
 const [openedDrawer, setOpenedDrawer] = useState(false);
-
+const [voted, setVoted] = useState(false);
 
 useEffect(()=>
 {
@@ -66,7 +66,15 @@ const checkRequestStatus = async (addr)=>
 }
 useEffect(()=>
 {
-  let result = verifyOwnership();
+
+    const checkVoted = async ()=>
+    {
+      let result = await instance.methods.voted(session.id,myAddr).call();
+      setVoted(result);
+    }
+    checkVoted();
+  
+  verifyOwnership();
   const requestStatus = async ()=>
   {
     let result = await checkRequestStatus(myAddr);
@@ -200,7 +208,9 @@ const showParticipants = async ()=>
               transitionTimingFunction="ease"
               size="80%"
             >
-              <Participants instance={instance} registered={registered} owner={owner} myAddr={myAddr} session={session} sessionPhase={sessionPhase} checkRegisteredStatus={checkRegisteredStatus} />
+              <Participants instance={instance} registered={registered} owner={owner} myAddr={myAddr}
+                session={session} sessionPhase={sessionPhase} checkRegisteredStatus={checkRegisteredStatus}
+                votedState={[voted,setVoted]}/>
               </Drawer>
       </div>
 

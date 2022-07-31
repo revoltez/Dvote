@@ -63,6 +63,7 @@
     border: 1px solid #40c156;
     height: fit-content;
     width: fit-content;
+    cursor: pointer;
 }
 .vote-btn:hover
 {
@@ -80,6 +81,7 @@
     border: 1px solid #2188e1;
     height: fit-content;
     width: fit-content;
+    cursor: pointer;
 }
 .approve-voter-btn:hover
 {
@@ -97,6 +99,7 @@
     border: 1px solid #dd3445;
     height: fit-content;
     width: fit-content;
+    cursor: pointer;
 
 }
 .approve-candidate-btn:hover
@@ -117,5 +120,4 @@
     height: fit-content;
     width: fit-content;
 }
-
 

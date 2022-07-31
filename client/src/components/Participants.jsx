@@ -3,7 +3,7 @@ import { useState,useEffect } from 'react'
 import "../styles/participantList.css"
 import Participant from './Participant';
 
-export default function Participants({instance,registered,owner,myAddr,session,sessionPhase,checkRegisteredStatus}) {
+export default function Participants({instance,registered,owner,myAddr,session,sessionPhase,checkRegisteredStatus,votedState}) {
 
 const [participantList, setParticipantList] = useState([]);
 const [participants, setParticipants] = useState([]);
@@ -61,8 +61,8 @@ useEffect(()=>
     }
   });
   
-
   setParticipantList(list);
+
 
 },[participants,myAddr])
 
@@ -156,7 +156,7 @@ useEffect(()=>
   return (
     <div class="participant-list-container">{
       participantList.map((elem,index)=> (<Participant instance={instance} registered={registered} owner={owner} myAddr={myAddr} 
-      session={session} sessionPhase={sessionPhase} key={index} participant={elem} winner={winner}/>)) 
+      session={session} sessionPhase={sessionPhase} key={index} participant={elem} winner={winner} votedState={votedState}/>)) 
       }
 
     </div>

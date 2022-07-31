@@ -80,6 +80,7 @@
     margin:1%;
     display: flex;
     background-color: #25272a;
+    border-radius: 15px;
 }
 .card-title
 {
@@ -150,7 +151,8 @@
     width: fit-content;
     font-size: small;
     font-weight: bold;
-    margin:2%
+    margin:2%;
+    cursor: pointer;
 }
 .btn-form-candidate
 {
@@ -163,6 +165,7 @@
     color: #dd3445;
     font-size:small;
     font-weight: bold;
+    cursor: pointer;
     
 }
 .btn-form-candidate:hover
@@ -186,7 +189,8 @@
     font-weight: bold;
     width: fit-content;
     height: fit-content;
-    margin:2%
+    margin:2%;
+    cursor: pointer;
 
 }
 

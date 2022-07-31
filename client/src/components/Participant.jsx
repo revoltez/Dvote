@@ -1,25 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import avatar from "../images/Avatar.jpg"
-export default function Participant({participant,instance,session,myAddr,owner,registered,sessionPhase,winner}) {
+export default function Participant({participant,instance,session,myAddr,owner,registered,sessionPhase,winner,votedState}) {
   
   // get state of participant and  hange the class params depending on his state
   const [voteClassParams, setVoteClassParams] = useState("invisible");
   const [approveClassParams, setApproveClassParams] = useState("invisible");
-  const [voted, setVoted] = useState(false);
   const [imgSrcParam, setImgSrcParam] = useState(participant.imgURI);
   const [winnerClassParam, setWinnerClassParam] = useState("invisible"); 
-  useEffect(()=>
-  {
-    
-    const checkVoted = async ()=>
-    {
-      let result = await instance.methods.voted(session.id,myAddr).call();
-      setVoted(result);
-    }
-    checkVoted();
-  },[myAddr])
+  const [voted, setVoted]= votedState;
 
-useEffect(()=>
+  useEffect(()=>
 {
   console.log("winner changed::",winner);
   console.log("session changed child ",sessionPhase);
@@ -95,7 +85,6 @@ const approve= async()=>
     switch (participant.type) {
       case "voter":
           await instance.methods.approveVoter(session.id,participant.id).send({from:myAddr});
-          setVoteClassParams("vote-btn")
           setApproveClassParams("invisible");
           break;
       case "candidate":

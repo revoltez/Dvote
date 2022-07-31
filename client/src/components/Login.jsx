@@ -33,7 +33,7 @@ useEffect(()=>
 
 
 return (
-<Transition mounted={loginOpened} transition="scale-x" duration={800} timingFunction="ease">
+<Transition mounted={loginOpened} transition="skew-up" duration={400} timingFunction="ease">
       {(styles) =>
   <div style={styles}> 
   <div class="body">

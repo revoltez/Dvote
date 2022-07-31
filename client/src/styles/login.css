@@ -76,6 +76,7 @@
     padding: 10px;
     color: #7148e9;
     font-size: medium;
+    cursor: pointer;
 }
 .btn-form:hover
 {
