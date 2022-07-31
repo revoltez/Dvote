@@ -10,6 +10,12 @@
 
 - Each voting session has three phases, registration phase and voting phase, and Locked phase.
 
+
+
+https://user-images.githubusercontent.com/24751547/182038782-901e887d-0f2c-474e-9a1a-6f56d126d11c.mp4
+
+
+
 ## installation
 
 - clone, install dependencies and migrate the contract
