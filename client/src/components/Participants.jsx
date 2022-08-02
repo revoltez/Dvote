@@ -22,9 +22,9 @@ const countWinner = async ()=>
       winningCandidate.id = p.id;
       winningCandidate.count = count;
       console.log("vote count for "+p.name+" is at "+ count);
-      setWinner(prev => { return {id:winningCandidate.id,count:winningCandidate.count}});
     } 
   }
+  setWinner(prev => winningCandidate);
 })
 }
 
